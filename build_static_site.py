@@ -14,7 +14,7 @@ OUTPUT_HTML_PATH: pathlib.Path = pathlib.Path("index.html")
 OUTPUT_CSS_PATH: pathlib.Path = pathlib.Path("style.css")
 RESUME_FILENAME: str = "resume.pdf" # Define resume filename
 ENGLISH_RESUME_FILENAME: str = "English_resume.pdf" # Define English resume filename
-GITHUB_PROFILE_URL: str = "#" # Placeholder URL for GitHub profile
+GITHUB_PROFILE_URL: str = "https://github.com/LingHangCCC/Cathay_Intern.git" # Your GitHub profile or repo URL
 
 # Update SELF_INTRODUCTION_HTML for new layout
 SELF_INTRODUCTION_HTML: str = """
