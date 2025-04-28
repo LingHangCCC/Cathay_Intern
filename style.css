@@ -234,25 +234,6 @@ footer {
 .project-text { flex-grow: 1; min-width: 200px; }
 .project-image { max-width: 150px; max-height: 100px; height: auto; width: auto; border-radius: 4px; object-fit: contain; border: 1px solid #ddd; flex-shrink: 0; order: 2; }
 
-/* --- Download Button Style --- */
-.download-button {
-    display: inline-block;
-    background-color: #007bff;
-    color: white;
-    padding: 10px 20px;
-    text-align: center;
-    text-decoration: none;
-    border-radius: 5px;
-    font-weight: bold;
-    margin: 1rem 0;
-    transition: background-color 0.3s ease;
-}
-.download-button:hover {
-    background-color: #0056b3;
-    color: white; /* Ensure text remains white */
-    text-decoration: none; /* Remove underline on hover */
-}
-
 /* --- Sub-Tab Styles --- */
 .sub-nav {
     margin-bottom: 1.5rem;
