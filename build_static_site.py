@@ -1,0 +1,785 @@
+import json
+import pathlib
+import html
+import re # Import regex for section splitting
+from typing import List, Dict, Any, Optional, Tuple
+
+from markdown_it import MarkdownIt
+# from markdown_it.utils import read_fixture_file # No longer needed if not reading fixtures
+
+# --- 常數定義 ---
+NOTEBOOK_PATH: pathlib.Path = pathlib.Path("prompt_guide.json")
+SUMMARY_GUIDE_MD_PATH: pathlib.Path = pathlib.Path("gpt4-1_prompt_guide_cursor.md") # New path for summary
+OUTPUT_HTML_PATH: pathlib.Path = pathlib.Path("index.html")
+OUTPUT_CSS_PATH: pathlib.Path = pathlib.Path("style.css")
+RESUME_FILENAME: str = "resume.pdf" # Define resume filename
+ENGLISH_RESUME_FILENAME: str = "English_resume.pdf" # Define English resume filename
+GITHUB_PROFILE_URL: str = "#" # Placeholder URL for GitHub profile
+
+# Update SELF_INTRODUCTION_HTML for new layout
+SELF_INTRODUCTION_HTML: str = """
+<section id="about" class="section">
+  <h2>自我介紹</h2>
+  <div class="contact-info">
+    <div class="contact-text">
+      <p><strong>姓名：</strong>趙駖翰</p>
+      <p><strong>聯絡電話：</strong>0985-881-530</p>
+      <p><strong>Email：</strong><a href="mailto:plmo79896@gmail.com">plmo79896@gmail.com</a></p>
+    </div>
+    <img src="profile.png" alt="個人照片" class="profile-pic">
+  </div>
+
+  {rest_of_the_content}
+
+</section>
+""".format(rest_of_the_content="""
+  <h2>學歷</h2>
+  <ul>
+    <li>國立政治大學 地政學系土地管理組（主修）</li>
+    <li>經濟學系（雙主修）</li>
+    <li>統計學系（輔系）</li>
+    <li>金融科技專長學程</li>
+    <li>GPA：3.93 / 4.3</li>
+    <li>目前已錄取國立政治大學統計學研究所</li>
+  </ul>
+  <h2>專業技能</h2>
+  <ul>
+    <li>程式語言：Python、R、SAS Viya</li>
+    <li>資料分析與建模、NLP、機器學習基礎</li>
+    <li>Microsoft Office：Excel、PowerPoint、Word</li>
+    <li>語言能力：TOEIC 800</li>
+  </ul>
+  <h2>工作與實習經驗</h2>
+  <ul>
+    <li><strong>政大教務處 行政工讀生</strong>（2022.09–迄今）－活動規劃、資料整理、對外聯繫</li>
+    <li><strong>上品國際不動產 實習生</strong>（2023.07–2023.09）－文件彙整、租售表單製作、網站維運</li>
+    <li><strong>太古可口可樂 暑期工讀生</strong>（2022.07–2022.08）－商品陳列、庫存盤點</li>
+    <li><strong>金棠科技 膜管清洗員</strong>（2021.07–2021.08）－RO膜管清洗與品質檢驗</li>
+  </ul>
+  <h2>競賽與專案經驗</h2>
+  <ul>
+    <li class="project-item">
+        <div class="project-text">SAS 校園黑客松（SAS Campus Hackathon）－銀牌獎，動態保費定價模型</div>
+        <img src="proj2.png" alt="SAS 黑客松照片" class="project-image">
+    </li>
+    <li class="project-item">
+        <div class="project-text">資料科學期末專案－電子商務交易詐欺預測</div>
+        <img src="proj1.png" alt="資料科學專案照片" class="project-image">
+    </li>
+  </ul>
+  <h2>社團與領導經驗</h2>
+  <ul>
+    <li>熱舞社－多次大型演出經驗以及參與全國性賽事</li>
+    <li>三校熱舞社聯合競賽總召－協調 50 名團隊成員，節省 NT$6,000 預算，活動參與人數超越百人</li>
+  </ul>
+""") # Split HTML for clarity and easier modification
+
+
+# Update HTML_TEMPLATE with new title, tabs, download button, and sub-tab placeholders
+HTML_TEMPLATE: str = """
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cathay_Intern</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>個人靜態網站專案</h1>
+        <nav>
+            <button onclick="showTab('intro')" class="tab-button active">🚀 自我介紹</button>
+            <button onclick="showTab('guide')" class="tab-button">💡 GPT-4.1 提示指南</button>
+            <button onclick="showTab('summary')" class="tab-button">✨ 指南摘要</button>
+        </nav>
+    </header>
+
+    <main>
+        <section id="intro" class="tab-content active">
+            {self_intro_html}
+        </section>
+
+        <section id="guide" class="tab-content">
+             <nav class="sub-nav">
+                {guide_sub_nav}
+             </nav>
+             <div class="sub-content-container">
+                 {guide_sub_content}
+             </div>
+        </section>
+
+        <section id="summary" class="tab-content">
+             {summary_html}
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-buttons">
+            <a href="{resume_filename}" download class="download-button">下載中文履歷</a>
+            <a href="{english_resume_filename}" download class="download-button">下載英文履歷</a>
+            <a href="{github_profile_url}" target="_blank" rel="noopener noreferrer" class="external-link-button github-button">前往 GitHub</a>
+        </div>
+        <p>Generated by Python Script</p>
+    </footer>
+
+    <script>
+        // Main tab switching function
+        function showTab(tabId) {{
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(button => button.classList.remove('active'));
+
+            const selectedContent = document.getElementById(tabId);
+            if (selectedContent) selectedContent.classList.add('active');
+            const selectedButton = document.querySelector(`.tab-button[onclick="showTab('${{tabId}}')"]`);
+            if (selectedButton) selectedButton.classList.add('active');
+
+            // If the main guide tab is shown, activate its first sub-tab
+            if (tabId === 'guide') {{
+                // Find the first sub-tab button and click it programmatically or call showSubTab
+                const firstSubButton = document.querySelector('#guide .sub-nav button');
+                if (firstSubButton) {{
+                    const firstSubTabId = firstSubButton.getAttribute('onclick').match(/'([^']+)'/)[1];
+                    showSubTab(firstSubTabId); // Show the first sub-tab
+                }}
+            }}
+        }}
+
+        // Sub-tab switching function (within the 'guide' section)
+        function showSubTab(subTabId) {{
+            const subContents = document.querySelectorAll('#guide .sub-tab-content');
+            subContents.forEach(content => content.classList.remove('active'));
+            const subButtons = document.querySelectorAll('#guide .sub-tab-button');
+            subButtons.forEach(button => button.classList.remove('active'));
+
+            const selectedSubContent = document.getElementById(subTabId);
+            if (selectedSubContent) selectedSubContent.classList.add('active');
+            const selectedSubButton = document.querySelector(`#guide .sub-tab-button[onclick="showSubTab('${{subTabId}}')"]`);
+            if (selectedSubButton) selectedSubButton.classList.add('active');
+        }}
+
+
+        // Initialize the first main tab on page load
+        document.addEventListener('DOMContentLoaded', () => {{
+            showTab('intro');
+        }});
+    </script>
+</body>
+</html>
+"""
+
+CSS_TEMPLATE: str = """
+body {
+    font-family: sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 1rem 0;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+    padding-bottom: 0.5rem;
+}
+
+nav {
+    margin-top: 0.5rem;
+}
+
+nav button {
+    background-color: #555;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    margin: 0 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+nav button:hover {
+    background-color: #777;
+}
+
+nav button.active {
+    background-color: #007bff;
+}
+
+main {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 1rem;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    border-radius: 8px;
+}
+
+.tab-content {
+    display: none; /* Hide tabs by default */
+    padding: 1.5rem;
+    border-top: 1px solid #ddd;
+    margin-top: -1px; /* Align border */
+}
+
+.tab-content.active {
+    display: block; /* Show active tab */
+}
+
+h1, h2, h3 {
+    color: #333;
+}
+
+h2 {
+    border-bottom: 2px solid #eee;
+    padding-bottom: 0.3rem;
+    margin-top: 1.5rem;
+}
+
+h3 {
+   margin-top: 1.2rem;
+}
+
+pre {
+    background-color: #2d2d2d; /* Darker background for code */
+    color: #f8f8f2;      /* Light text color */
+    padding: 1em;
+    overflow-x: auto;    /* Allow horizontal scrolling */
+    border-radius: 5px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9em;
+    border: 1px solid #555; /* Subtle border */
+}
+
+code {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #eee; /* Light background for inline code */
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+
+pre code {
+    background-color: transparent; /* Code inside pre should inherit pre's background */
+    padding: 0;
+    border-radius: 0;
+    font-size: inherit; /* Inherit pre's font size */
+}
+
+
+blockquote {
+    background-color: #eef;
+    border-left: 5px solid #007bff;
+    padding: 1rem;
+    margin-left: 0;
+}
+
+ul, ol {
+    padding-left: 20px;
+}
+
+li {
+    margin-bottom: 0.5rem;
+}
+
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+footer {
+    text-align: center;
+    margin-top: 2rem;
+    padding: 1rem;
+    font-size: 0.9em;
+    color: #777;
+}
+
+.footer-buttons {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.download-button, .external-link-button {
+    display: inline-block;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    cursor: pointer;
+}
+
+.download-button {
+    background-color: #007bff;
+}
+
+.download-button:hover {
+    background-color: #0056b3;
+    color: white;
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+.external-link-button {
+    background-color: #333;
+}
+
+.external-link-button:hover {
+    background-color: #555;
+    color: white;
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+/* Basic responsiveness */
+@media (max-width: 600px) {
+    nav button {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+    main {
+        margin: 1rem;
+        padding: 0.5rem;
+    }
+    .tab-content {
+        padding: 1rem;
+    }
+    .footer-buttons { flex-direction: column; align-items: stretch; }
+    .download-button, .external-link-button { width: 80%; margin-left: auto; margin-right: auto; }
+}
+"""
+
+
+# --- Core Logic (Refactored load_notebook_content with Debug Prints) ---
+
+# Function to determine section key based on heading (More Robust & Correct Order - Strict Headers Only)
+def get_section_key(text: str) -> Optional[str]:
+    text = text.strip().lower() # Normalize to lower case and strip whitespace
+    # Only match specific headers, remove ambiguous keyword checks
+    if text.startswith("# 1."): return "agentic"
+    if text.startswith("# 2."): return "long_context"
+    if text.startswith("# 3."): return "chain_of_thought"
+    if text.startswith("# 4."): return "instruction_following"
+    if text.startswith("# 5."): return "general_advice"
+    if text.startswith("# appendix"): return "appendix"
+    # # Keyword checks as fallback (REMOVED to avoid misidentification)
+    # if "agentic workflows" in text: return "agentic"
+    # if "long context" in text: return "long_context"
+    # if "chain of thought" in text: return "chain_of_thought"
+    # if "instruction following" in text: return "instruction_following"
+    # if "general advice" in text: return "general_advice"
+    return None
+
+SECTION_TITLES: Dict[str, str] = {
+    "agentic": "1. Agentic Workflows",
+    "long_context": "2. Long Context",
+    "chain_of_thought": "3. Chain of Thought",
+    "instruction_following": "4. Instruction Following",
+    "general_advice": "5. General Advice",
+    "appendix": "Appendix" # Optional title for Appendix
+}
+
+def load_notebook_content(file_path: pathlib.Path, md_parser: MarkdownIt) -> Tuple[Dict[str, List[str]], List[str]]:
+    """
+    Loads and parses content from a Jupyter Notebook JSON file into HTML snippets,
+    categorized by major sections.
+
+    Args:
+        file_path: Path to the Jupyter Notebook file (.json format).
+        md_parser: An initialized MarkdownIt instance for rendering Markdown cells.
+
+    Returns:
+        A tuple containing:
+        - A dictionary where keys are section identifiers (e.g., 'agentic')
+          and values are lists of HTML snippets for that section.
+        - A list of ordered section keys found in the notebook.
+    """
+    sections: Dict[str, List[str]] = {key: [] for key in SECTION_TITLES}
+    ordered_keys: List[str] = []
+    current_section_key: Optional[str] = None
+    html_snippets: List[str] = [] # For content before first header
+
+    print(f"\n--- Debug: Starting notebook processing for {file_path} ---") # DEBUG START
+
+    try:
+        # ... (File reading and JSON parsing logic) ...
+        if not file_path.exists(): raise FileNotFoundError(f"Error: Notebook file not found: {file_path}")
+        try: # nested try for file operations
+            with open(file_path, 'r', encoding='utf-8') as f: notebook_data: Dict[str, Any] = json.load(f)
+        except json.JSONDecodeError as e: raise json.JSONDecodeError(f"Error: Could not parse JSON file: {file_path} - {e.msg}", e.doc, e.pos) from e
+        except Exception as e: raise RuntimeError(f"Unexpected error reading file: {file_path} - {e}") from e
+
+        cells: List[Dict[str, Any]] = notebook_data.get('cells', [])
+        if not cells:
+             # ... (Handle no cells) ...
+             print(f"--- Debug: No cells found. ---") # DEBUG
+             sections["error"] = ['<p class="error">Warning: No cells found in the notebook.</p>']
+             return sections, ["error"]
+
+        print(f"--- Debug: Processing {len(cells)} cells... ---") # DEBUG
+
+        for i, cell in enumerate(cells):
+            cell_type: Optional[str] = cell.get('cell_type')
+            source_list: List[str] = cell.get('source', [])
+            source_content: str = "".join(source_list)
+            cell_html_parts: List[str] = [] # HTML parts generated from this specific cell
+            debug_cell_info = f"Cell {i} (Type: {cell_type})" # DEBUG INFO
+
+            is_section_header = False
+            potential_key = None
+            # Identify section based on Markdown H1 headings
+            if cell_type == 'markdown':
+                potential_key = get_section_key(source_content)
+                if potential_key:
+                    is_section_header = True
+                    print(f"--- Debug: {debug_cell_info} - Identified section header for key: '{potential_key}' ---") # DEBUG
+                    current_section_key = potential_key
+                    if current_section_key not in ordered_keys:
+                        ordered_keys.append(current_section_key)
+                    # ***** MODIFICATION HERE: Render header cell content *****
+                    try:
+                         # Render the content of the header cell itself
+                         rendered_header_md = md_parser.render(source_content)
+                         cell_html_parts.append(rendered_header_md)
+                    except Exception as render_err:
+                         print(f"--- Debug: Error rendering Markdown header cell {i}: {render_err} ---")
+                         cell_html_parts.append(f'<p class="error">Error rendering Markdown header cell {i}.</p>')
+                    # Do not continue here, let it fall through to append
+
+                elif source_content.strip(): # Regular markdown cell (not a section header)
+                    try:
+                        rendered_md = md_parser.render(source_content)
+                        cell_html_parts.append(rendered_md)
+                    except Exception as render_err:
+                        print(f"--- Debug: Error rendering Markdown cell {i}: {render_err} ---")
+                        cell_html_parts.append(f'<p class="error">Error rendering Markdown cell {i}.</p>')
+
+            elif cell_type == 'code':
+                # --- Process Code Cell Source ---
+                if source_content.strip():
+                    # ... (Language detection logic) ...
+                    language = "python" # Default etc.
+                    metadata = cell.get('metadata', {})
+                    kernelspec = metadata.get('kernelspec', {})
+                    lang_info = notebook_data.get('metadata', {}).get('language_info', {})
+                    notebook_lang_name = lang_info.get('name', '').lower()
+                    kernel_lang_name = kernelspec.get('language', '').lower()
+                    first_line = source_content.split('\n')[0] if source_content else ""
+                    if 'python' in notebook_lang_name or 'python' in kernel_lang_name: language = "python"
+                    elif 'bash' in first_line or '%%bash' in first_line: language = "bash"
+                    elif first_line.startswith("#!") and "python" in first_line: language = "python"
+                    elif first_line.startswith("#!") and "bash" in first_line: language = "bash"
+                    else: language = "text"
+                    escaped_code = html.escape(source_content)
+                    cell_html_parts.append(f'<pre><code class="language-{language}">{escaped_code}</code></pre>')
+
+                # --- Process Code Cell Outputs ---
+                outputs: List[Dict[str, Any]] = cell.get('outputs', [])
+                if outputs:
+                    output_html_parts_for_cell = []
+                    # ... (Loop through outputs, generate HTML as before) ...
+                    for output_idx, output in enumerate(outputs):
+                        # ... (Output processing logic) ...
+                        output_type: Optional[str] = output.get('output_type')
+                        rendered_output = ""
+                        if output_type == 'stream' and output.get('name') == 'stdout':
+                            text = "".join(output.get('text', []))
+                            if text.strip(): rendered_output = f'<pre class="output stdout"><code>{html.escape(text)}</code></pre>'
+                        elif output_type in ['display_data', 'execute_result']:
+                             data: Dict[str, Any] = output.get('data', {})
+                             if 'text/html' in data:
+                                 html_out = "".join(data['text/html'])
+                                 if html_out.strip(): rendered_output = f'<div class="output display_data html">{html_out}</div>'
+                             elif 'text/markdown' in data and not rendered_output:
+                                 md_out = "".join(data['text/markdown'])
+                                 if md_out.strip():
+                                     try: rendered_output = f'<div class="output display_data markdown">{md_parser.render(md_out)}</div>'
+                                     except Exception as e: rendered_output = f'<div class="output error">Error rendering output Markdown.</div>'
+                             elif 'text/plain' in data and not rendered_output:
+                                 plain_out = "".join(data['text/plain'])
+                                 if plain_out.strip(): rendered_output = f'<pre class="output display_data plain"><code>{html.escape(plain_out)}</code></pre>'
+                        if rendered_output: output_html_parts_for_cell.append(rendered_output)
+
+
+                    if output_html_parts_for_cell:
+                        cell_html_parts.append('<div class="code-outputs"><h4>執行輸出:</h4>' + "\n".join(output_html_parts_for_cell) + '</div>')
+
+            # Append the generated HTML parts for this cell to the current section
+            if current_section_key and cell_html_parts:
+                sections[current_section_key].extend(cell_html_parts)
+            elif not current_section_key and cell_html_parts: # Content before first header
+                 html_snippets.extend(cell_html_parts)
+
+
+    except (FileNotFoundError, json.JSONDecodeError, KeyError, RuntimeError) as load_err:
+         # ... (Handle loading errors) ...
+         print(f"--- Debug: Error during notebook loading/parsing: {load_err} ---") # DEBUG ERROR
+         sections["error"] = [f'<p class="error">Error loading or parsing notebook: {html.escape(str(load_err))}</p>']
+         return sections, ["error"]
+    except Exception as proc_err:
+         # ... (Handle processing errors) ...
+         print(f"--- Debug: Unexpected error processing cells: {proc_err} ---") # DEBUG ERROR
+         sections["error"] = [f'<p class="error">Unexpected error processing notebook: {html.escape(str(proc_err))}</p>']
+         return sections, ["error"]
+
+    # Prepend any content found before the first section header
+    if html_snippets and ordered_keys:
+        first_key = ordered_keys[0]
+        print(f"--- Debug: Prepending {len(html_snippets)} initial snippets to section '{first_key}'. ---") # DEBUG
+        sections[first_key] = html_snippets + sections[first_key]
+    elif html_snippets and not ordered_keys:
+        print(f"--- Debug: No sections identified. Adding {len(html_snippets)} snippets to default section. ---") # DEBUG
+        sections["default"] = html_snippets
+        ordered_keys.append("default")
+
+    # --- DEBUG: Print final section content counts (Re-enabled) ---
+    print("--- Debug: Final section content summary ---")
+    for key in ordered_keys:
+        content_count = len(sections.get(key, []))
+        print(f"- Section '{key}': {content_count} HTML snippets")
+    if 'chain_of_thought' not in ordered_keys: print("- Section 'chain_of_thought' key MISSING in ordered_keys.")
+    if 'general_advice' not in ordered_keys: print("- Section 'general_advice' key MISSING in ordered_keys.")
+    print("--- End Debug Summary ---")
+    # --- END DEBUG ---
+
+    return sections, ordered_keys
+
+# --- Main Build Function (Adjusted) ---
+def build_site():
+    """Generates the static index.html and style.css files."""
+    print("Starting static site generation...")
+    md = MarkdownIt("commonmark", {'html': True, 'linkify': True, 'typographer': True}).enable('table')
+
+    guide_sections: Dict[str, List[str]] = {}
+    ordered_guide_keys: List[str] = []
+    self_intro_html: str = ""
+    summary_html: str = ""
+
+    try:
+        print(f"Loading self-introduction HTML...")
+        self_intro_html = SELF_INTRODUCTION_HTML
+
+        print("Loading and processing Full Guide Notebook content...")
+        guide_sections, ordered_guide_keys = load_notebook_content(NOTEBOOK_PATH, md)
+
+        print(f"Loading and rendering Summary Guide Markdown...")
+        if SUMMARY_GUIDE_MD_PATH.exists():
+             with open(SUMMARY_GUIDE_MD_PATH, 'r', encoding='utf-8') as f:
+                 summary_md = f.read()
+             summary_html = md.render(summary_md)
+        else:
+             print(f"Warning: Summary guide file not found at {SUMMARY_GUIDE_MD_PATH}")
+             summary_html = f'<p class="error">指南摘要檔案 ({SUMMARY_GUIDE_MD_PATH.name}) 未找到。</p>'
+
+    except Exception as e:
+         print("--- UNEXPECTED ERROR during content loading/processing ---")
+         print(f"An unexpected error occurred: {e}")
+         print("Site generation aborted.")
+         return
+
+    # --- Generate Sub-Navigation and Content for Full Guide ---
+    guide_sub_nav_html = ""
+    guide_sub_content_html = ""
+    if "error" not in guide_sections:
+        valid_ordered_keys = [k for k in ordered_guide_keys if k in SECTION_TITLES]
+
+        for i, key in enumerate(valid_ordered_keys):
+             title = SECTION_TITLES[key]
+             sub_tab_id = f"subtab-{key}"
+             active_class = ' active' if i == 0 else ''
+             guide_sub_nav_html += f'<button onclick="showSubTab(\'{sub_tab_id}\')" class="sub-tab-button{active_class}">{title}</button>\n'
+
+             content_html = "".join(guide_sections.get(key, ['<p>此部分無內容。</p>']))
+
+             guide_sub_content_html += f'<div id="{sub_tab_id}" class="sub-tab-content{active_class}">\n{content_html}\n</div>\n'
+    else:
+        guide_sub_content_html = "\n".join(guide_sections["error"])
+
+
+    # --- Generate Final HTML ---
+    print("Generating final index.html...")
+    final_html = HTML_TEMPLATE.format(
+        self_intro_html=self_intro_html,
+        guide_sub_nav=guide_sub_nav_html,
+        guide_sub_content=guide_sub_content_html,
+        summary_html=summary_html,
+        resume_filename=RESUME_FILENAME,
+        english_resume_filename=ENGLISH_RESUME_FILENAME,
+        github_profile_url=GITHUB_PROFILE_URL
+    )
+
+    # --- Write Files ---
+    try:
+        print(f"Writing {OUTPUT_HTML_PATH}...")
+        with open(OUTPUT_HTML_PATH, 'w', encoding='utf-8') as f:
+            f.write(final_html)
+
+        # Append new CSS rules for images, download button, and sub-tabs
+        additional_css_rules = """
+/* --- Adjusted Image Styles --- */
+.contact-info {
+    display: flex;
+    align-items: center; /* Center items vertically */
+    gap: 20px;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    border-bottom: 1px solid #eee; /* Lighter border */
+    padding-bottom: 1rem;
+}
+.contact-text {
+    flex-grow: 1;
+}
+.contact-text p {
+    margin: 0.3em 0; /* Adjust spacing */
+}
+.profile-pic {
+    max-width: 120px; /* Adjusted size */
+    height: auto;
+    border-radius: 8px; /* Slightly rounded rectangle */
+    object-fit: cover;
+    border: 1px solid #ddd;
+    flex-shrink: 0;
+}
+.project-item {
+    /* (Existing styles seem okay, maybe adjust gap/padding slightly) */
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 1rem;
+    padding: 10px;
+    border: 1px solid #f0f0f0;
+    border-radius: 5px;
+    flex-wrap: wrap;
+}
+.project-text { flex-grow: 1; min-width: 200px; }
+.project-image { max-width: 150px; max-height: 100px; height: auto; width: auto; border-radius: 4px; object-fit: contain; border: 1px solid #ddd; flex-shrink: 0; order: 2; }
+
+/* --- Download Button Style --- */
+.download-button {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    margin: 1rem 0;
+    transition: background-color 0.3s ease;
+}
+.download-button:hover {
+    background-color: #0056b3;
+    color: white; /* Ensure text remains white */
+    text-decoration: none; /* Remove underline on hover */
+}
+
+/* --- Sub-Tab Styles --- */
+.sub-nav {
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #ddd;
+    text-align: center; /* Center buttons */
+    display: flex; /* Use flexbox for wrapping */
+    flex-wrap: wrap; /* Allow buttons to wrap */
+    justify-content: center; /* Center wrapped buttons */
+    gap: 5px; /* Add gap between buttons */
+}
+.sub-tab-button {
+    background-color: #e9ecef;
+    color: #495057;
+    border: 1px solid #ced4da;
+    padding: 0.6rem 1.2rem;
+    /* margin: 0 3px 5px 3px; */ /* Remove margin, use gap instead */
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    flex-shrink: 0; /* Prevent buttons from shrinking */
+}
+.sub-tab-button:hover {
+    background-color: #dee2e6;
+}
+.sub-tab-button.active {
+    background-color: #6c757d; /* Darker background for active sub-tab */
+    color: white;
+    border-color: #6c757d;
+}
+.sub-tab-content {
+    display: none; /* Hide sub-tabs by default */
+}
+.sub-tab-content.active {
+    display: block; /* Show active sub-tab */
+}
+
+/* --- Existing Output & Error Styles --- */
+.code-outputs { margin-top: 1em; border: 1px solid #e0e0e0; border-radius: 4px; padding: 0.5em 1em 1em 1em; background-color: #f9f9f9; }
+.code-outputs h4 { margin-top: 0; margin-bottom: 0.5em; font-size: 0.9em; color: #555; border-bottom: 1px dashed #ccc; padding-bottom: 0.3em; }
+.code-outputs pre.output { margin-top: 0.5em; margin-bottom: 0.5em; background-color: #fff; color: #333; border: 1px solid #eee; padding: 0.8em; white-space: pre-wrap; word-wrap: break-word; } /* Added wrapping */
+.code-outputs div.output { margin-top: 0.5em; margin-bottom: 0.5em; padding: 0.5em; overflow-wrap: break-word; } /* Added wrapping */
+.error { color: red; font-weight: bold; background-color: #ffe0e0; border: 1px solid red; padding: 1em; border-radius: 4px; }
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 600px) {
+    .contact-info { flex-direction: column; align-items: center; text-align: center; }
+    .profile-pic { order: -1; margin-bottom: 1rem; max-width: 100px;}
+    .project-item { flex-direction: column; align-items: center; text-align: center; }
+    .project-image { order: -1; margin-bottom: 0.5rem; max-width: 90%; max-height: 150px; width: auto; }
+    .project-text { min-width: 0; }
+    /* Keep sub-nav wrapping behavior */
+    .sub-nav { border-bottom: none; }
+    .sub-tab-button { flex-grow: 1; text-align: center;} /* Let buttons take full width when wrapped */
+
+    /* Adjust pre formatting for better wrapping on mobile */
+    pre, pre code {
+       white-space: pre-wrap !important;       /* Allow wrapping */
+       word-wrap: break-word !important;        /* Break long words */
+       overflow-x: auto; /* Still allow scroll if needed */
+    }
+}
+"""
+        # Combine base CSS template with the additional rules
+        combined_css = CSS_TEMPLATE + additional_css_rules
+
+        print(f"Writing {OUTPUT_CSS_PATH}...")
+        with open(OUTPUT_CSS_PATH, 'w', encoding='utf-8') as f:
+             f.write(combined_css) # Use combined CSS
+
+        print("\n--- SUCCESS ---")
+        print(f"Static site generated successfully!")
+        print(f"Output files: {OUTPUT_HTML_PATH}, {OUTPUT_CSS_PATH}")
+        print(f"Make sure to place '{RESUME_FILENAME}', '{ENGLISH_RESUME_FILENAME}', 'profile.png', 'proj1.png', 'proj2.png', and '{SUMMARY_GUIDE_MD_PATH.name}' in the root directory.")
+        print(f"Remember to update the GitHub link placeholder in build_static_site.py or index.html.")
+        print(f"You can now deploy the generated files to Vercel.")
+
+    except IOError as e:
+        print(f"\n--- ERROR ---")
+        print(f"Failed to write output file: {e}")
+        print("Site generation failed.")
+    except Exception as e:
+        print(f"\n--- UNEXPECTED ERROR ---")
+        print(f"An unexpected error occurred during file writing: {e}")
+        print("Site generation failed.")
+
+# --- Script Entry Point ---
+if __name__ == "__main__":
+    build_site() 

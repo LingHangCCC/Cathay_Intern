@@ -1,0 +1,1440 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cathay_Intern</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>個人靜態網站專案</h1>
+        <nav>
+            <button onclick="showTab('intro')" class="tab-button active">🚀 自我介紹</button>
+            <button onclick="showTab('guide')" class="tab-button">💡 GPT-4.1 提示指南</button>
+            <button onclick="showTab('summary')" class="tab-button">✨ 指南摘要</button>
+        </nav>
+    </header>
+
+    <main>
+        <section id="intro" class="tab-content active">
+            
+<section id="about" class="section">
+  <h2>自我介紹</h2>
+  <div class="contact-info">
+    <div class="contact-text">
+      <p><strong>姓名：</strong>趙駖翰</p>
+      <p><strong>聯絡電話：</strong>0985-881-530</p>
+      <p><strong>Email：</strong><a href="mailto:plmo79896@gmail.com">plmo79896@gmail.com</a></p>
+    </div>
+    <img src="profile.png" alt="個人照片" class="profile-pic">
+  </div>
+
+  
+  <h2>學歷</h2>
+  <ul>
+    <li>國立政治大學 地政學系土地管理組（主修）</li>
+    <li>經濟學系（雙主修）</li>
+    <li>統計學系（輔系）</li>
+    <li>金融科技專長學程</li>
+    <li>GPA：3.93 / 4.3</li>
+    <li>目前已錄取國立政治大學統計學研究所</li>
+  </ul>
+  <h2>專業技能</h2>
+  <ul>
+    <li>程式語言：Python、R、SAS Viya</li>
+    <li>資料分析與建模、NLP、機器學習基礎</li>
+    <li>Microsoft Office：Excel、PowerPoint、Word</li>
+    <li>語言能力：TOEIC 800</li>
+  </ul>
+  <h2>工作與實習經驗</h2>
+  <ul>
+    <li><strong>政大教務處 行政工讀生</strong>（2022.09–迄今）－活動規劃、資料整理、對外聯繫</li>
+    <li><strong>上品國際不動產 實習生</strong>（2023.07–2023.09）－文件彙整、租售表單製作、網站維運</li>
+    <li><strong>太古可口可樂 暑期工讀生</strong>（2022.07–2022.08）－商品陳列、庫存盤點</li>
+    <li><strong>金棠科技 膜管清洗員</strong>（2021.07–2021.08）－RO膜管清洗與品質檢驗</li>
+  </ul>
+  <h2>競賽與專案經驗</h2>
+  <ul>
+    <li class="project-item">
+        <div class="project-text">SAS 校園黑客松（SAS Campus Hackathon）－銀牌獎，動態保費定價模型</div>
+        <img src="proj2.png" alt="SAS 黑客松照片" class="project-image">
+    </li>
+    <li class="project-item">
+        <div class="project-text">資料科學期末專案－電子商務交易詐欺預測</div>
+        <img src="proj1.png" alt="資料科學專案照片" class="project-image">
+    </li>
+  </ul>
+  <h2>社團與領導經驗</h2>
+  <ul>
+    <li>熱舞社－多次大型演出經驗以及參與全國性賽事</li>
+    <li>三校熱舞社聯合競賽總召－協調 50 名團隊成員，節省 NT$6,000 預算，活動參與人數超越百人</li>
+  </ul>
+
+
+</section>
+
+        </section>
+
+        <section id="guide" class="tab-content">
+             <nav class="sub-nav">
+                <button onclick="showSubTab('subtab-agentic')" class="sub-tab-button active">1. Agentic Workflows</button>
+<button onclick="showSubTab('subtab-long_context')" class="sub-tab-button">2. Long Context</button>
+<button onclick="showSubTab('subtab-chain_of_thought')" class="sub-tab-button">3. Chain of Thought</button>
+<button onclick="showSubTab('subtab-instruction_following')" class="sub-tab-button">4. Instruction Following</button>
+<button onclick="showSubTab('subtab-general_advice')" class="sub-tab-button">5. General Advice</button>
+<button onclick="showSubTab('subtab-appendix')" class="sub-tab-button">Appendix</button>
+
+             </nav>
+             <div class="sub-content-container">
+                 <div id="subtab-agentic" class="sub-tab-content active">
+<h1>GPT-4.1 Prompting Guide</h1>
+<p>The GPT-4.1 family of models represents a significant step forward from GPT-4o in capabilities across coding, instruction following, and long context. In this prompting guide, we collate a series of important prompting tips derived from extensive internal testing to help developers fully leverage the improved abilities of this new model family.</p>
+<p>Many typical best practices still apply to GPT-4.1, such as providing context examples, making instructions as specific and clear as possible, and inducing planning via prompting to maximize model intelligence. However, we expect that getting the most out of this model will require some prompt migration. GPT-4.1 is trained to follow instructions more closely and more literally than its predecessors, which tended to more liberally infer intent from user and system prompts. This also means, however, that GPT-4.1 is highly steerable and responsive to well-specified prompts - if model behavior is different from what you expect, a single sentence firmly and unequivocally clarifying your desired behavior is almost always sufficient to steer the model on course.</p>
+<p>Please read on for prompt examples you can use as a reference, and remember that while this guidance is widely applicable, no advice is one-size-fits-all. AI engineering is inherently an empirical discipline, and large language models inherently nondeterministic; in addition to following this guide, we advise building informative evals and iterating often to ensure your prompt engineering changes are yielding benefits for your use case.</p>
+<h1>1. Agentic Workflows</h1>
+<p>GPT-4.1 is a great place to build agentic workflows. In model training we emphasized providing a diverse range of agentic problem-solving trajectories, and our agentic harness for the model achieves state-of-the-art performance for non-reasoning models on SWE-bench Verified, solving 55% of problems.</p>
+<h2>System Prompt Reminders</h2>
+<p>In order to fully utilize the agentic capabilities of GPT-4.1, we recommend including three key types of reminders in all agent prompts. The following prompts are optimized specifically for the agentic coding workflow, but can be easily modified for general agentic use cases.</p>
+<ol>
+<li>Persistence: this ensures the model understands it is entering a multi-message turn, and prevents it from prematurely yielding control back to the user. Our example is the following:</li>
+</ol>
+<pre><code>You are an agent - please keep going until the user’s query is completely resolved, before ending your turn and yielding back to the user. Only terminate your turn when you are sure that the problem is solved.
+</code></pre>
+<ol start="2">
+<li>Tool-calling: this encourages the model to make full use of its tools, and reduces its likelihood of hallucinating or guessing an answer. Our example is the following:</li>
+</ol>
+<pre><code>If you are not sure about file content or codebase structure pertaining to the user’s request, use your tools to read files and gather the relevant information: do NOT guess or make up an answer.
+</code></pre>
+<ol start="3">
+<li>Planning [optional]: if desired, this ensures the model explicitly plans and reflects upon each tool call in text, instead of completing the task by chaining together a series of only tool calls. Our example is the following:</li>
+</ol>
+<pre><code>You MUST plan extensively before each function call, and reflect extensively on the outcomes of the previous function calls. DO NOT do this entire process by making function calls only, as this can impair your ability to solve the problem and think insightfully.
+</code></pre>
+<p>GPT-4.1 is trained to respond very closely to both user instructions and system prompts in the agentic setting. The model adhered closely to these three simple instructions and increased our internal SWE-bench Verified score by close to 20% - so we highly encourage starting any agent prompt with clear reminders covering the three categories listed above. As a whole, we find that these three instructions transform the model from a chatbot-like state into a much more “eager” agent, driving the interaction forward autonomously and independently.</p>
+<h2>Tool Calls</h2>
+<p>Compared to previous models, GPT-4.1 has undergone more training on effectively utilizing tools passed as arguments in an OpenAI API request. We encourage developers to exclusively use the tools field to pass tools, rather than manually injecting tool descriptions into your prompt and writing a separate parser for tool calls, as some have reported doing in the past. This is the best way to minimize errors and ensure the model remains in distribution during tool-calling trajectories - in our own experiments, we observed a 2% increase in SWE-bench Verified pass rate when using API-parsed tool descriptions versus manually injecting the schemas into the system prompt.</p>
+<p>Developers should name tools clearly to indicate their purpose and add a clear, detailed description in the &quot;description&quot; field of the tool. Similarly, for each tool param, lean on good naming and descriptions to ensure appropriate usage. If your tool is particularly complicated and you'd like to provide examples of tool usage, we recommend that you create an <code># Examples</code> section in your system prompt and place the examples there, rather than adding them into the &quot;description' field, which should remain thorough but relatively concise. Providing examples can be helpful to indicate when to use tools, whether to include user text alongside tool calls, and what parameters are appropriate for different inputs. Remember that you can use “Generate Anything” in the <a href="https://platform.openai.com/playground">Prompt Playground</a> to get a good starting point for your new tool definitions.</p>
+<h2>Prompting-Induced Planning &amp; Chain-of-Thought</h2>
+<p>As mentioned already, developers can optionally prompt agents built with GPT-4.1 to plan and reflect between tool calls, instead of silently calling tools in an unbroken sequence. GPT-4.1 is not a reasoning model - meaning that it does not produce an internal chain of thought before answering - but in the prompt, a developer can induce the model to produce an explicit, step-by-step plan by using any variant of the Planning prompt component shown above. This can be thought of as the model “thinking out loud.” In our experimentation with the SWE-bench Verified agentic task, inducing explicit planning increased the pass rate by 4%.</p>
+<h2>Sample Prompt: SWE-bench Verified</h2>
+<p>Below, we share the agentic prompt that we used to achieve our highest score on SWE-bench Verified, which features detailed instructions about workflow and problem-solving strategy. This general pattern can be used for any agentic task.</p>
+<pre><code class="language-python">from openai import OpenAI
+import os
+
+client = OpenAI(
+    api_key=os.environ.get(
+        &quot;OPENAI_API_KEY&quot;, &quot;&lt;your OpenAI API key if not set as env var&gt;&quot;
+    )
+)
+
+SYS_PROMPT_SWEBENCH = &quot;&quot;&quot;
+You will be tasked to fix an issue from an open-source repository.
+
+Your thinking should be thorough and so it&#x27;s fine if it&#x27;s very long. You can think step by step before and after each action you decide to take.
+
+You MUST iterate and keep going until the problem is solved.
+
+You already have everything you need to solve this problem in the /testbed folder, even without internet connection. I want you to fully solve this autonomously before coming back to me.
+
+Only terminate your turn when you are sure that the problem is solved. Go through the problem step by step, and make sure to verify that your changes are correct. NEVER end your turn without having solved the problem, and when you say you are going to make a tool call, make sure you ACTUALLY make the tool call, instead of ending your turn.
+
+THE PROBLEM CAN DEFINITELY BE SOLVED WITHOUT THE INTERNET.
+
+Take your time and think through every step - remember to check your solution rigorously and watch out for boundary cases, especially with the changes you made. Your solution must be perfect. If not, continue working on it. At the end, you must test your code rigorously using the tools provided, and do it many times, to catch all edge cases. If it is not robust, iterate more and make it perfect. Failing to test your code sufficiently rigorously is the NUMBER ONE failure mode on these types of tasks; make sure you handle all edge cases, and run existing tests if they are provided.
+
+You MUST plan extensively before each function call, and reflect extensively on the outcomes of the previous function calls. DO NOT do this entire process by making function calls only, as this can impair your ability to solve the problem and think insightfully.
+
+# Workflow
+
+## High-Level Problem Solving Strategy
+
+1. Understand the problem deeply. Carefully read the issue and think critically about what is required.
+2. Investigate the codebase. Explore relevant files, search for key functions, and gather context.
+3. Develop a clear, step-by-step plan. Break down the fix into manageable, incremental steps.
+4. Implement the fix incrementally. Make small, testable code changes.
+5. Debug as needed. Use debugging techniques to isolate and resolve issues.
+6. Test frequently. Run tests after each change to verify correctness.
+7. Iterate until the root cause is fixed and all tests pass.
+8. Reflect and validate comprehensively. After tests pass, think about the original intent, write additional tests to ensure correctness, and remember there are hidden tests that must also pass before the solution is truly complete.
+
+Refer to the detailed sections below for more information on each step.
+
+## 1. Deeply Understand the Problem
+Carefully read the issue and think hard about a plan to solve it before coding.
+
+## 2. Codebase Investigation
+- Explore relevant files and directories.
+- Search for key functions, classes, or variables related to the issue.
+- Read and understand relevant code snippets.
+- Identify the root cause of the problem.
+- Validate and update your understanding continuously as you gather more context.
+
+## 3. Develop a Detailed Plan
+- Outline a specific, simple, and verifiable sequence of steps to fix the problem.
+- Break down the fix into small, incremental changes.
+
+## 4. Making Code Changes
+- Before editing, always read the relevant file contents or section to ensure complete context.
+- If a patch is not applied correctly, attempt to reapply it.
+- Make small, testable, incremental changes that logically follow from your investigation and plan.
+
+## 5. Debugging
+- Make code changes only if you have high confidence they can solve the problem
+- When debugging, try to determine the root cause rather than addressing symptoms
+- Debug for as long as needed to identify the root cause and identify a fix
+- Use print statements, logs, or temporary code to inspect program state, including descriptive statements or error messages to understand what&#x27;s happening
+- To test hypotheses, you can also add test statements or functions
+- Revisit your assumptions if unexpected behavior occurs.
+
+## 6. Testing
+- Run tests frequently using `!python3 run_tests.py` (or equivalent).
+- After each change, verify correctness by running relevant tests.
+- If tests fail, analyze failures and revise your patch.
+- Write additional tests if needed to capture important behaviors or edge cases.
+- Ensure all tests pass before finalizing.
+
+## 7. Final Verification
+- Confirm the root cause is fixed.
+- Review your solution for logic correctness and robustness.
+- Iterate until you are extremely confident the fix is complete and all tests pass.
+
+## 8. Final Reflection and Additional Testing
+- Reflect carefully on the original intent of the user and the problem statement.
+- Think about potential edge cases or scenarios that may not be covered by existing tests.
+- Write additional tests that would need to pass to fully validate the correctness of your solution.
+- Run these new tests and ensure they all pass.
+- Be aware that there are additional hidden tests that must also pass for the solution to be successful.
+- Do not assume the task is complete just because the visible tests pass; continue refining until you are confident the fix is robust and comprehensive.
+&quot;&quot;&quot;
+
+PYTHON_TOOL_DESCRIPTION = &quot;&quot;&quot;This function is used to execute Python code or terminal commands in a stateful Jupyter notebook environment. python will respond with the output of the execution or time out after 60.0 seconds. Internet access for this session is disabled. Do not make external web requests or API calls as they will fail. Just as in a Jupyter notebook, you may also execute terminal commands by calling this function with a terminal command, prefaced with an exclamation mark.
+
+In addition, for the purposes of this task, you can call this function with an `apply_patch` command as input.  `apply_patch` effectively allows you to execute a diff/patch against a file, but the format of the diff specification is unique to this task, so pay careful attention to these instructions. To use the `apply_patch` command, you should pass a message of the following structure as &quot;input&quot;:
+
+%%bash
+apply_patch &lt;&lt;&quot;EOF&quot;
+*** Begin Patch
+[YOUR_PATCH]
+*** End Patch
+EOF
+
+Where [YOUR_PATCH] is the actual content of your patch, specified in the following V4A diff format.
+
+*** [ACTION] File: [path/to/file] -&gt; ACTION can be one of Add, Update, or Delete.
+For each snippet of code that needs to be changed, repeat the following:
+[context_before] -&gt; See below for further instructions on context.
+- [old_code] -&gt; Precede the old code with a minus sign.
++ [new_code] -&gt; Precede the new, replacement code with a plus sign.
+[context_after] -&gt; See below for further instructions on context.
+
+For instructions on [context_before] and [context_after]:
+- By default, show 3 lines of code immediately above and 3 lines immediately below each change. If a change is within 3 lines of a previous change, do NOT duplicate the first change&#x27;s [context_after] lines in the second change&#x27;s [context_before] lines.
+- If 3 lines of context is insufficient to uniquely identify the snippet of code within the file, use the @@ operator to indicate the class or function to which the snippet belongs. For instance, we might have:
+@@ class BaseClass
+[3 lines of pre-context]
+- [old_code]
++ [new_code]
+[3 lines of post-context]
+
+- If a code block is repeated so many times in a class or function such that even a single @@ statement and 3 lines of context cannot uniquely identify the snippet of code, you can use multiple `@@` statements to jump to the right context. For instance:
+
+@@ class BaseClass
+@@ 	def method():
+[3 lines of pre-context]
+- [old_code]
++ [new_code]
+[3 lines of post-context]
+
+Note, then, that we do not use line numbers in this diff format, as the context is enough to uniquely identify code. An example of a message that you might pass as &quot;input&quot; to this function, in order to apply a patch, is shown below.
+
+%%bash
+apply_patch &lt;&lt;&quot;EOF&quot;
+*** Begin Patch
+*** Update File: pygorithm/searching/binary_search.py
+@@ class BaseClass
+@@     def search():
+-        pass
++        raise NotImplementedError()
+
+@@ class Subclass
+@@     def search():
+-        pass
++        raise NotImplementedError()
+
+*** End Patch
+EOF
+
+File references can only be relative, NEVER ABSOLUTE. After the apply_patch command is run, python will always say &quot;Done!&quot;, regardless of whether the patch was successfully applied or not. However, you can determine if there are issue and errors by looking at any warnings or logging lines printed BEFORE the &quot;Done!&quot; is output.
+&quot;&quot;&quot;
+
+python_bash_patch_tool = {
+  &quot;type&quot;: &quot;function&quot;,
+  &quot;name&quot;: &quot;python&quot;,
+  &quot;description&quot;: PYTHON_TOOL_DESCRIPTION,
+  &quot;parameters&quot;: {
+      &quot;type&quot;: &quot;object&quot;,
+      &quot;strict&quot;: True,
+      &quot;properties&quot;: {
+          &quot;input&quot;: {
+              &quot;type&quot;: &quot;string&quot;,
+              &quot;description&quot;: &quot; The Python code, terminal command (prefaced by exclamation mark), or apply_patch command that you wish to execute.&quot;,
+          }
+      },
+      &quot;required&quot;: [&quot;input&quot;],
+  },
+}
+
+# Additional harness setup:
+# - Add your repo to /testbed
+# - Add your issue to the first user message
+# - Note: Even though we used a single tool for python, bash, and apply_patch, we generally recommend defining more granular tools that are focused on a single function
+
+response = client.responses.create(
+    instructions=SYS_PROMPT_SWEBENCH,
+    model=&quot;gpt-4.1-2025-04-14&quot;,
+    tools=[python_bash_patch_tool],
+    input=f&quot;Please answer the following question:\nBug: Typerror...&quot;
+)
+
+response.to_dict()[&quot;output&quot;]</code></pre><div class="code-outputs"><h4>執行輸出:</h4><pre class="output display_data plain"><code>[{&#x27;id&#x27;: &#x27;msg_67fe92df26ac819182ffafce9ff4e4fc07c7e06242e51f8b&#x27;,
+  &#x27;content&#x27;: [{&#x27;annotations&#x27;: [],
+    &#x27;text&#x27;: &quot;Thank you for the report, but “Typerror” is too vague for me to start debugging right away.\n\n**To make progress, I need to:**\n1. Find the exact error message text (e.g. `&#x27;TypeError: ...&#x27;`).\n2. Find which file and which line/function/class the error occurred in.\n3. Figure out what triggered the error (test file, usage, reproduction steps).\n4. Find the root cause and details.\n\n**Next steps:**\n- Investigate error/log/test output files for a Python `TypeError` message.\n- Examine the relevant code sections for problematic type usage.\n- If possible, reproduce the bug locally.\n\n**Plan:**\n- First, I will search for test files and log output in the `/testbed` directory that may contain the full error message and stack trace.\n\nLet’s start by listing the contents of the `/testbed` directory to look for clues.&quot;,
+    &#x27;type&#x27;: &#x27;output_text&#x27;}],
+  &#x27;role&#x27;: &#x27;assistant&#x27;,
+  &#x27;status&#x27;: &#x27;completed&#x27;,
+  &#x27;type&#x27;: &#x27;message&#x27;},
+ {&#x27;arguments&#x27;: &#x27;{&quot;input&quot;:&quot;!ls -l /testbed&quot;}&#x27;,
+  &#x27;call_id&#x27;: &#x27;call_frnxyJgKi5TsBem0nR9Zuzdw&#x27;,
+  &#x27;name&#x27;: &#x27;python&#x27;,
+  &#x27;type&#x27;: &#x27;function_call&#x27;,
+  &#x27;id&#x27;: &#x27;fc_67fe92e3da7081918fc18d5c96dddc1c07c7e06242e51f8b&#x27;,
+  &#x27;status&#x27;: &#x27;completed&#x27;}]</code></pre></div>
+</div>
+<div id="subtab-long_context" class="sub-tab-content">
+<h1>2. Long context</h1>
+<p>GPT-4.1 has a performant 1M token input context window, and is useful for a variety of long context tasks, including structured document parsing, re-ranking, selecting relevant information while ignoring irrelevant context, and performing multi-hop reasoning using context.</p>
+<h2>Optimal Context Size</h2>
+<p>We observe very good performance on needle-in-a-haystack evaluations up to our full 1M token context, and we’ve observed very strong performance at complex tasks with a mix of both relevant and irrelevant code and other documents. However, long context performance can degrade as more items are required to be retrieved, or perform complex reasoning that requires knowledge of the state of the entire context (like performing a graph search, for example).</p>
+<h2>Tuning Context Reliance</h2>
+<p>Consider the mix of external vs. internal world knowledge that might be required to answer your question. Sometimes it’s important for the model to use some of its own knowledge to connect concepts or make logical jumps, while in others it’s desirable to only use provided context</p>
+<pre><code># Instructions
+// for internal knowledge
+- Only use the documents in the provided External Context to answer the User Query. If you don't know the answer based on this context, you must respond &quot;I don't have the information needed to answer that&quot;, even if a user insists on you answering the question.
+// For internal and external knowledge
+- By default, use the provided external context to answer the User Query, but if other basic knowledge is needed to answer, and you're confident in the answer, you can use some of your own knowledge to help answer the question.
+</code></pre>
+<h2>Prompt Organization</h2>
+<p>Especially in long context usage, placement of instructions and context can impact performance. If you have long context in your prompt, ideally place your instructions at both the beginning and end of the provided context, as we found this to perform better than only above or below. If you’d prefer to only have your instructions once, then above the provided context works better than below.</p>
+
+</div>
+<div id="subtab-chain_of_thought" class="sub-tab-content">
+<h1>3. Chain of Thought</h1>
+<p>As mentioned above, GPT-4.1 is not a reasoning model, but prompting the model to think step by step (called “chain of thought”) can be an effective way for a model to break down problems into more manageable pieces, solve them, and improve overall output quality, with the tradeoff of higher cost and latency associated with using more output tokens. The model has been trained to perform well at agentic reasoning about and real-world problem solving, so it shouldn’t require much prompting to perform well.</p>
+<p>We recommend starting with this basic chain-of-thought instruction at the end of your prompt:</p>
+<pre><code>...
+
+First, think carefully step by step about what documents are needed to answer the query. Then, print out the TITLE and ID of each document. Then, format the IDs into a list.
+</code></pre>
+<p>From there, you should improve your chain-of-thought (CoT) prompt by auditing failures in your particular examples and evals, and addressing systematic planning and reasoning errors with more explicit instructions. In the unconstrained CoT prompt, there may be variance in the strategies it tries, and if you observe an approach that works well, you can codify that strategy in your prompt. Generally speaking, errors tend to occur from misunderstanding user intent, insufficient context gathering or analysis, or insufficient or incorrect step by step thinking, so watch out for these and try to address them with more opinionated instructions.</p>
+<p>Here is an example prompt instructing the model to focus more methodically on analyzing user intent and considering relevant context before proceeding to answer.</p>
+<pre><code># Reasoning Strategy
+1. Query Analysis: Break down and analyze the query until you're confident about what it might be asking. Consider the provided context to help clarify any ambiguous or confusing information.
+2. Context Analysis: Carefully select and analyze a large set of potentially relevant documents. Optimize for recall - it's okay if some are irrelevant, but the correct documents must be in this list, otherwise your final answer will be wrong. Analysis steps for each:
+	a. Analysis: An analysis of how it may or may not be relevant to answering the query.
+	b. Relevance rating: [high, medium, low, none]
+3. Synthesis: summarize which documents are most relevant and why, including all documents with a relevance rating of medium or higher.
+
+# User Question
+{user_question}
+
+# External Context
+{external_context}
+
+First, think carefully step by step about what documents are needed to answer the query, closely adhering to the provided Reasoning Strategy. Then, print out the TITLE and ID of each document. Then, format the IDs into a list.
+</code></pre>
+
+</div>
+<div id="subtab-instruction_following" class="sub-tab-content">
+<h1>4. Instruction Following</h1>
+<p>GPT-4.1 exhibits outstanding instruction-following performance, which developers can leverage to precisely shape and control the outputs for their particular use cases. Developers often extensively prompt for agentic reasoning steps, response tone and voice, tool calling information, output formatting, topics to avoid, and more. However, since the model follows instructions more literally, developers may need to include explicit specification around what to do or not to do. Furthermore, existing prompts optimized for other models may not immediately work with this model, because existing instructions are followed more closely and implicit rules are no longer being as strongly inferred.</p>
+<h2>Recommended Workflow</h2>
+<p>Here is our recommended workflow for developing and debugging instructions in prompts:</p>
+<ol>
+<li>Start with an overall “Response Rules” or “Instructions” section with high-level guidance and bullet points.</li>
+<li>If you’d like to change a more specific behavior, add a section to specify more details for that category, like <code># Sample Phrases</code>.</li>
+<li>If there are specific steps you’d like the model to follow in its workflow, add an ordered list and instruct the model to follow these steps.</li>
+<li>If behavior still isn’t working as expected:
+<ol>
+<li>Check for conflicting, underspecified, or wrong instructions and examples. If there are conflicting instructions, GPT-4.1 tends to follow the one closer to the end of the prompt.</li>
+<li>Add examples that demonstrate desired behavior; ensure that any important behavior demonstrated in your examples are also cited in your rules.</li>
+<li>It’s generally not necessary to use all-caps or other incentives like bribes or tips. We recommend starting without these, and only reaching for these if necessary for your particular prompt. Note that if your existing prompts include these techniques, it could cause GPT-4.1 to pay attention to it too strictly.</li>
+</ol>
+</li>
+</ol>
+<p><em>Note that using your preferred AI-powered IDE can be very helpful for iterating on prompts, including checking for consistency or conflicts, adding examples, or making cohesive updates like adding an instruction and updating instructions to demonstrate that instruction.</em></p>
+<h2>Common Failure Modes</h2>
+<p>These failure modes are not unique to GPT-4.1, but we share them here for general awareness and ease of debugging.</p>
+<ul>
+<li>Instructing a model to always follow a specific behavior can occasionally induce adverse effects. For instance, if told “you must call a tool before responding to the user,” models may hallucinate tool inputs or call the tool with null values if they do not have enough information. Adding “if you don’t have enough information to call the tool, ask the user for the information you need” should mitigate this.</li>
+<li>When provided sample phrases, models can use those quotes verbatim and start to sound repetitive to users. Ensure you instruct the model to vary them as necessary.</li>
+<li>Without specific instructions, some models can be eager to provide additional prose to explain their decisions, or output more formatting in responses than may be desired. Provide instructions and potentially examples to help mitigate.</li>
+</ul>
+<h2>Example Prompt: Customer Service</h2>
+<p>This demonstrates best practices for a fictional customer service agent. Observe the diversity of rules, the specificity, the use of additional sections for greater detail, and an example to demonstrate precise behavior that incorporates all prior rules.</p>
+<p>Try running the following notebook cell - you should see both a user message and tool call, and the user message should start with a greeting, then echo back their answer, then mention they're about to call a tool. Try changing the instructions to shape the model behavior, or trying other user messages, to test instruction following performance.</p>
+<pre><code class="language-python">SYS_PROMPT_CUSTOMER_SERVICE = &quot;&quot;&quot;You are a helpful customer service agent working for NewTelco, helping a user efficiently fulfill their request while adhering closely to provided guidelines.
+
+# Instructions
+- Always greet the user with &quot;Hi, you&#x27;ve reached NewTelco, how can I help you?&quot;
+- Always call a tool before answering factual questions about the company, its offerings or products, or a user&#x27;s account. Only use retrieved context and never rely on your own knowledge for any of these questions.
+    - However, if you don&#x27;t have enough information to properly call the tool, ask the user for the information you need.
+- Escalate to a human if the user requests.
+- Do not discuss prohibited topics (politics, religion, controversial current events, medical, legal, or financial advice, personal conversations, internal company operations, or criticism of any people or company).
+- Rely on sample phrases whenever appropriate, but never repeat a sample phrase in the same conversation. Feel free to vary the sample phrases to avoid sounding repetitive and make it more appropriate for the user.
+- Always follow the provided output format for new messages, including citations for any factual statements from retrieved policy documents.
+- If you&#x27;re going to call a tool, always message the user with an appropriate message before and after calling the tool.
+- Maintain a professional and concise tone in all responses, and use emojis between sentences.
+- If you&#x27;ve resolved the user&#x27;s request, ask if there&#x27;s anything else you can help with
+
+# Precise Response Steps (for each response)
+1. If necessary, call tools to fulfill the user&#x27;s desired action. Always message the user before and after calling a tool to keep them in the loop.
+2. In your response to the user
+    a. Use active listening and echo back what you heard the user ask for.
+    b. Respond appropriately given the above guidelines.
+
+# Sample Phrases
+## Deflecting a Prohibited Topic
+- &quot;I&#x27;m sorry, but I&#x27;m unable to discuss that topic. Is there something else I can help you with?&quot;
+- &quot;That&#x27;s not something I&#x27;m able to provide information on, but I&#x27;m happy to help with any other questions you may have.&quot;
+
+## Before calling a tool
+- &quot;To help you with that, I&#x27;ll just need to verify your information.&quot;
+- &quot;Let me check that for you—one moment, please.&quot;
+- &quot;I&#x27;ll retrieve the latest details for you now.&quot;
+
+## After calling a tool
+- &quot;Okay, here&#x27;s what I found: [response]&quot;
+- &quot;So here&#x27;s what I found: [response]&quot;
+
+# Output Format
+- Always include your final response to the user.
+- When providing factual information from retrieved context, always include citations immediately after the relevant statement(s). Use the following citation format:
+    - For a single source: [NAME](ID)
+    - For multiple sources: [NAME](ID), [NAME](ID)
+- Only provide information about this company, its policies, its products, or the customer&#x27;s account, and only if it is based on information provided in context. Do not answer questions outside this scope.
+
+# Example
+## User
+Can you tell me about your family plan options?
+
+## Assistant Response 1
+### Message
+&quot;Hi, you&#x27;ve reached NewTelco, how can I help you? 😊🎉\n\nYou&#x27;d like to know about our family plan options. 🤝 Let me check that for you—one moment, please. 🚀&quot;
+
+### Tool Calls
+lookup_policy_document(topic=&quot;family plan options&quot;)
+
+// After tool call, the assistant would follow up with:
+
+## Assistant Response 2 (after tool call)
+### Message
+&quot;Okay, here&#x27;s what I found: 🎉 Our family plan allows up to 5 lines with shared data and a 10% discount for each additional line [Family Plan Policy](ID-010). 📱 Is there anything else I can help you with today? 😊&quot;
+&quot;&quot;&quot;
+
+get_policy_doc = {
+    &quot;type&quot;: &quot;function&quot;,
+    &quot;name&quot;: &quot;lookup_policy_document&quot;,
+    &quot;description&quot;: &quot;Tool to look up internal documents and policies by topic or keyword.&quot;,
+    &quot;parameters&quot;: {
+        &quot;strict&quot;: True,
+        &quot;type&quot;: &quot;object&quot;,
+        &quot;properties&quot;: {
+            &quot;topic&quot;: {
+                &quot;type&quot;: &quot;string&quot;,
+                &quot;description&quot;: &quot;The topic or keyword to search for in company policies or documents.&quot;,
+            },
+        },
+        &quot;required&quot;: [&quot;topic&quot;],
+        &quot;additionalProperties&quot;: False,
+    },
+}
+
+get_user_acct = {
+    &quot;type&quot;: &quot;function&quot;,
+    &quot;name&quot;: &quot;get_user_account_info&quot;,
+    &quot;description&quot;: &quot;Tool to get user account information&quot;,
+    &quot;parameters&quot;: {
+        &quot;strict&quot;: True,
+        &quot;type&quot;: &quot;object&quot;,
+        &quot;properties&quot;: {
+            &quot;phone_number&quot;: {
+                &quot;type&quot;: &quot;string&quot;,
+                &quot;description&quot;: &quot;Formatted as &#x27;(xxx) xxx-xxxx&#x27;&quot;,
+            },
+        },
+        &quot;required&quot;: [&quot;phone_number&quot;],
+        &quot;additionalProperties&quot;: False,
+    },
+}
+
+response = client.responses.create(
+    instructions=SYS_PROMPT_CUSTOMER_SERVICE,
+    model=&quot;gpt-4.1-2025-04-14&quot;,
+    tools=[get_policy_doc, get_user_acct],
+    input=&quot;How much will it cost for international service? I&#x27;m traveling to France.&quot;,
+    # input=&quot;Why was my last bill so high?&quot;
+)
+
+response.to_dict()[&quot;output&quot;]</code></pre><div class="code-outputs"><h4>執行輸出:</h4><pre class="output display_data plain"><code>[{&#x27;id&#x27;: &#x27;msg_67fe92d431548191b7ca6cd604b4784b06efc5beb16b3c5e&#x27;,
+  &#x27;content&#x27;: [{&#x27;annotations&#x27;: [],
+    &#x27;text&#x27;: &quot;Hi, you&#x27;ve reached NewTelco, how can I help you? 🌍✈️\n\nYou&#x27;d like to know the cost of international service while traveling to France. 🇫🇷 Let me check the latest details for you—one moment, please. 🕑&quot;,
+    &#x27;type&#x27;: &#x27;output_text&#x27;}],
+  &#x27;role&#x27;: &#x27;assistant&#x27;,
+  &#x27;status&#x27;: &#x27;completed&#x27;,
+  &#x27;type&#x27;: &#x27;message&#x27;},
+ {&#x27;arguments&#x27;: &#x27;{&quot;topic&quot;:&quot;international service cost France&quot;}&#x27;,
+  &#x27;call_id&#x27;: &#x27;call_cF63DLeyhNhwfdyME3ZHd0yo&#x27;,
+  &#x27;name&#x27;: &#x27;lookup_policy_document&#x27;,
+  &#x27;type&#x27;: &#x27;function_call&#x27;,
+  &#x27;id&#x27;: &#x27;fc_67fe92d5d6888191b6cd7cf57f707e4606efc5beb16b3c5e&#x27;,
+  &#x27;status&#x27;: &#x27;completed&#x27;}]</code></pre></div>
+</div>
+<div id="subtab-general_advice" class="sub-tab-content">
+<h1>5. General Advice</h1>
+<h2>Prompt Structure</h2>
+<p>For reference, here is a good starting point for structuring your prompts.</p>
+<pre><code># Role and Objective
+
+# Instructions
+
+## Sub-categories for more detailed instructions
+
+# Reasoning Steps
+
+# Output Format
+
+# Examples
+## Example 1
+
+# Context
+
+# Final instructions and prompt to think step by step
+</code></pre>
+<p>Add or remove sections to suit your needs, and experiment to determine what’s optimal for your usage.</p>
+<h2>Delimiters</h2>
+<p>Here are some general guidelines for selecting the best delimiters for your prompt. Please refer to the Long Context section for special considerations for that context type.</p>
+<ol>
+<li>Markdown: We recommend starting here, and using markdown titles for major sections and subsections (including deeper hierarchy, to H4+). Use inline backticks or backtick blocks to precisely wrap code, and standard numbered or bulleted lists as needed.</li>
+<li>XML: These also perform well, and we have improved adherence to information in XML with this model. XML is convenient to precisely wrap a section including start and end, add metadata to the tags for additional context, and enable nesting. Here is an example of using XML tags to nest examples in an example section, with inputs and outputs for each:</li>
+</ol>
+<pre><code>&lt;examples&gt;
+&lt;example1 type=&quot;Abbreviate&quot;&gt;
+&lt;input&gt;San Francisco&lt;/input&gt;
+&lt;output&gt;- SF&lt;/output&gt;
+&lt;/example1&gt;
+&lt;/examples&gt;
+</code></pre>
+<ol start="3">
+<li>JSON is highly structured and well understood by the model particularly in coding contexts. However it can be more verbose, and require character escaping that can add overhead.</li>
+</ol>
+<p>Guidance specifically for adding a large number of documents or files to input context:</p>
+<ul>
+<li>XML performed well in our long context testing.
+<ul>
+<li>Example: <code>&lt;doc id=1 title=”The Fox”&gt;The quick brown fox jumps over the lazy dog&lt;/doc&gt;</code></li>
+</ul>
+</li>
+<li>This format, proposed by Lee et al. (<a href="https://arxiv.org/pdf/2406.13121">ref</a>), also performed well in our long context testing.
+<ul>
+<li>Example: <code>ID: 1 | TITLE: The Fox | CONTENT: The quick brown fox jumps over the lazy dog</code></li>
+</ul>
+</li>
+<li>JSON performed particularly poorly.
+<ul>
+<li>Example: <code>[{“id”: 1, “title”: “The Fox”, “content”: “The quick brown fox jumped over the lazy dog”}]</code></li>
+</ul>
+</li>
+</ul>
+<p>The model is trained to robustly understand structure in a variety of formats. Generally, use your judgement and think about what will provide clear information and “stand out” to the model. For example, if you’re retrieving documents that contain lots of XML, an XML-based delimiter will likely be less effective.</p>
+<h2>Caveats</h2>
+<ul>
+<li>In some isolated cases we have observed the model being resistant to producing very long, repetitive outputs, for example, analyzing hundreds of items one by one. If this is necessary for your use case, instruct the model strongly to output this information in full, and consider breaking down the problem or using a more concise approach.</li>
+<li>We have seen some rare instances of parallel tool calls being incorrect. We advise testing this, and considering setting the <a href="https://platform.openai.com/docs/api-reference/responses/create#responses-create-parallel_tool_calls">parallel_tool_calls</a> param to false if you’re seeing issues.</li>
+</ul>
+
+</div>
+<div id="subtab-appendix" class="sub-tab-content">
+<h1>Appendix: Generating and Applying File Diffs</h1>
+<p>Developers have provided us feedback that accurate and well-formed diff generation is a critical capability to power coding-related tasks. To this end, the GPT-4.1 family features substantially improved diff capabilities relative to previous GPT models. Moreover, while GPT-4.1 has strong performance generating diffs of any format given clear instructions and examples, we open-source here one recommended diff format, on which the model has been extensively trained. We hope that in particular for developers just starting out, that this will take much of the guesswork out of creating diffs yourself.</p>
+<h2>Apply Patch</h2>
+<p>See the example below for a prompt that applies our recommended tool call correctly.</p>
+<pre><code class="language-python">APPLY_PATCH_TOOL_DESC = &quot;&quot;&quot;This is a custom utility that makes it more convenient to add, remove, move, or edit code files. `apply_patch` effectively allows you to execute a diff/patch against a file, but the format of the diff specification is unique to this task, so pay careful attention to these instructions. To use the `apply_patch` command, you should pass a message of the following structure as &quot;input&quot;:
+
+%%bash
+apply_patch &lt;&lt;&quot;EOF&quot;
+*** Begin Patch
+[YOUR_PATCH]
+*** End Patch
+EOF
+
+Where [YOUR_PATCH] is the actual content of your patch, specified in the following V4A diff format.
+
+*** [ACTION] File: [path/to/file] -&gt; ACTION can be one of Add, Update, or Delete.
+For each snippet of code that needs to be changed, repeat the following:
+[context_before] -&gt; See below for further instructions on context.
+- [old_code] -&gt; Precede the old code with a minus sign.
++ [new_code] -&gt; Precede the new, replacement code with a plus sign.
+[context_after] -&gt; See below for further instructions on context.
+
+For instructions on [context_before] and [context_after]:
+- By default, show 3 lines of code immediately above and 3 lines immediately below each change. If a change is within 3 lines of a previous change, do NOT duplicate the first change’s [context_after] lines in the second change’s [context_before] lines.
+- If 3 lines of context is insufficient to uniquely identify the snippet of code within the file, use the @@ operator to indicate the class or function to which the snippet belongs. For instance, we might have:
+@@ class BaseClass
+[3 lines of pre-context]
+- [old_code]
++ [new_code]
+[3 lines of post-context]
+
+- If a code block is repeated so many times in a class or function such that even a single @@ statement and 3 lines of context cannot uniquely identify the snippet of code, you can use multiple `@@` statements to jump to the right context. For instance:
+
+@@ class BaseClass
+@@ 	def method():
+[3 lines of pre-context]
+- [old_code]
++ [new_code]
+[3 lines of post-context]
+
+Note, then, that we do not use line numbers in this diff format, as the context is enough to uniquely identify code. An example of a message that you might pass as &quot;input&quot; to this function, in order to apply a patch, is shown below.
+
+%%bash
+apply_patch &lt;&lt;&quot;EOF&quot;
+*** Begin Patch
+*** Update File: pygorithm/searching/binary_search.py
+@@ class BaseClass
+@@     def search():
+-          pass
++          raise NotImplementedError()
+
+@@ class Subclass
+@@     def search():
+-          pass
++          raise NotImplementedError()
+
+*** End Patch
+EOF
+&quot;&quot;&quot;
+
+APPLY_PATCH_TOOL = {
+    &quot;name&quot;: &quot;apply_patch&quot;,
+    &quot;description&quot;: APPLY_PATCH_TOOL_DESC,
+    &quot;parameters&quot;: {
+        &quot;type&quot;: &quot;object&quot;,
+        &quot;properties&quot;: {
+            &quot;input&quot;: {
+                &quot;type&quot;: &quot;string&quot;,
+                &quot;description&quot;: &quot; The apply_patch command that you wish to execute.&quot;,
+            }
+        },
+        &quot;required&quot;: [&quot;input&quot;],
+    },
+}</code></pre><h2>Reference Implementation: apply_patch.py</h2>
+<p>Here’s a reference implementation of the apply_patch tool that we used as part of model training. You’ll need to make this an executable and available as `apply_patch` from the shell where the model will execute commands:</p>
+<pre><code class="language-python">#!/usr/bin/env python3
+
+&quot;&quot;&quot;
+A self-contained **pure-Python 3.9+** utility for applying human-readable
+“pseudo-diff” patch files to a collection of text files.
+&quot;&quot;&quot;
+
+from __future__ import annotations
+
+import pathlib
+from dataclasses import dataclass, field
+from enum import Enum
+from typing import (
+    Callable,
+    Dict,
+    List,
+    Optional,
+    Tuple,
+    Union,
+)
+
+
+# --------------------------------------------------------------------------- #
+#  Domain objects
+# --------------------------------------------------------------------------- #
+class ActionType(str, Enum):
+    ADD = &quot;add&quot;
+    DELETE = &quot;delete&quot;
+    UPDATE = &quot;update&quot;
+
+
+@dataclass
+class FileChange:
+    type: ActionType
+    old_content: Optional[str] = None
+    new_content: Optional[str] = None
+    move_path: Optional[str] = None
+
+
+@dataclass
+class Commit:
+    changes: Dict[str, FileChange] = field(default_factory=dict)
+
+
+# --------------------------------------------------------------------------- #
+#  Exceptions
+# --------------------------------------------------------------------------- #
+class DiffError(ValueError):
+    &quot;&quot;&quot;Any problem detected while parsing or applying a patch.&quot;&quot;&quot;
+
+
+# --------------------------------------------------------------------------- #
+#  Helper dataclasses used while parsing patches
+# --------------------------------------------------------------------------- #
+@dataclass
+class Chunk:
+    orig_index: int = -1
+    del_lines: List[str] = field(default_factory=list)
+    ins_lines: List[str] = field(default_factory=list)
+
+
+@dataclass
+class PatchAction:
+    type: ActionType
+    new_file: Optional[str] = None
+    chunks: List[Chunk] = field(default_factory=list)
+    move_path: Optional[str] = None
+
+
+@dataclass
+class Patch:
+    actions: Dict[str, PatchAction] = field(default_factory=dict)
+
+
+# --------------------------------------------------------------------------- #
+#  Patch text parser
+# --------------------------------------------------------------------------- #
+@dataclass
+class Parser:
+    current_files: Dict[str, str]
+    lines: List[str]
+    index: int = 0
+    patch: Patch = field(default_factory=Patch)
+    fuzz: int = 0
+
+    # ------------- low-level helpers -------------------------------------- #
+    def _cur_line(self) -&gt; str:
+        if self.index &gt;= len(self.lines):
+            raise DiffError(&quot;Unexpected end of input while parsing patch&quot;)
+        return self.lines[self.index]
+
+    @staticmethod
+    def _norm(line: str) -&gt; str:
+        &quot;&quot;&quot;Strip CR so comparisons work for both LF and CRLF input.&quot;&quot;&quot;
+        return line.rstrip(&quot;\r&quot;)
+
+    # ------------- scanning convenience ----------------------------------- #
+    def is_done(self, prefixes: Optional[Tuple[str, ...]] = None) -&gt; bool:
+        if self.index &gt;= len(self.lines):
+            return True
+        if (
+            prefixes
+            and len(prefixes) &gt; 0
+            and self._norm(self._cur_line()).startswith(prefixes)
+        ):
+            return True
+        return False
+
+    def startswith(self, prefix: Union[str, Tuple[str, ...]]) -&gt; bool:
+        return self._norm(self._cur_line()).startswith(prefix)
+
+    def read_str(self, prefix: str) -&gt; str:
+        &quot;&quot;&quot;
+        Consume the current line if it starts with *prefix* and return the text
+        **after** the prefix.  Raises if prefix is empty.
+        &quot;&quot;&quot;
+        if prefix == &quot;&quot;:
+            raise ValueError(&quot;read_str() requires a non-empty prefix&quot;)
+        if self._norm(self._cur_line()).startswith(prefix):
+            text = self._cur_line()[len(prefix) :]
+            self.index += 1
+            return text
+        return &quot;&quot;
+
+    def read_line(self) -&gt; str:
+        &quot;&quot;&quot;Return the current raw line and advance.&quot;&quot;&quot;
+        line = self._cur_line()
+        self.index += 1
+        return line
+
+    # ------------- public entry point -------------------------------------- #
+    def parse(self) -&gt; None:
+        while not self.is_done((&quot;*** End Patch&quot;,)):
+            # ---------- UPDATE ---------- #
+            path = self.read_str(&quot;*** Update File: &quot;)
+            if path:
+                if path in self.patch.actions:
+                    raise DiffError(f&quot;Duplicate update for file: {path}&quot;)
+                move_to = self.read_str(&quot;*** Move to: &quot;)
+                if path not in self.current_files:
+                    raise DiffError(f&quot;Update File Error - missing file: {path}&quot;)
+                text = self.current_files[path]
+                action = self._parse_update_file(text)
+                action.move_path = move_to or None
+                self.patch.actions[path] = action
+                continue
+
+            # ---------- DELETE ---------- #
+            path = self.read_str(&quot;*** Delete File: &quot;)
+            if path:
+                if path in self.patch.actions:
+                    raise DiffError(f&quot;Duplicate delete for file: {path}&quot;)
+                if path not in self.current_files:
+                    raise DiffError(f&quot;Delete File Error - missing file: {path}&quot;)
+                self.patch.actions[path] = PatchAction(type=ActionType.DELETE)
+                continue
+
+            # ---------- ADD ---------- #
+            path = self.read_str(&quot;*** Add File: &quot;)
+            if path:
+                if path in self.patch.actions:
+                    raise DiffError(f&quot;Duplicate add for file: {path}&quot;)
+                if path in self.current_files:
+                    raise DiffError(f&quot;Add File Error - file already exists: {path}&quot;)
+                self.patch.actions[path] = self._parse_add_file()
+                continue
+
+            raise DiffError(f&quot;Unknown line while parsing: {self._cur_line()}&quot;)
+
+        if not self.startswith(&quot;*** End Patch&quot;):
+            raise DiffError(&quot;Missing *** End Patch sentinel&quot;)
+        self.index += 1  # consume sentinel
+
+    # ------------- section parsers ---------------------------------------- #
+    def _parse_update_file(self, text: str) -&gt; PatchAction:
+        action = PatchAction(type=ActionType.UPDATE)
+        lines = text.split(&quot;\n&quot;)
+        index = 0
+        while not self.is_done(
+            (
+                &quot;*** End Patch&quot;,
+                &quot;*** Update File:&quot;,
+                &quot;*** Delete File:&quot;,
+                &quot;*** Add File:&quot;,
+                &quot;*** End of File&quot;,
+            )
+        ):
+            def_str = self.read_str(&quot;@@ &quot;)
+            section_str = &quot;&quot;
+            if not def_str and self._norm(self._cur_line()) == &quot;@@&quot;:
+                section_str = self.read_line()
+
+            if not (def_str or section_str or index == 0):
+                raise DiffError(f&quot;Invalid line in update section:\n{self._cur_line()}&quot;)
+
+            if def_str.strip():
+                found = False
+                if def_str not in lines[:index]:
+                    for i, s in enumerate(lines[index:], index):
+                        if s == def_str:
+                            index = i + 1
+                            found = True
+                            break
+                if not found and def_str.strip() not in [
+                    s.strip() for s in lines[:index]
+                ]:
+                    for i, s in enumerate(lines[index:], index):
+                        if s.strip() == def_str.strip():
+                            index = i + 1
+                            self.fuzz += 1
+                            found = True
+                            break
+
+            next_ctx, chunks, end_idx, eof = peek_next_section(self.lines, self.index)
+            new_index, fuzz = find_context(lines, next_ctx, index, eof)
+            if new_index == -1:
+                ctx_txt = &quot;\n&quot;.join(next_ctx)
+                raise DiffError(
+                    f&quot;Invalid {&#x27;EOF &#x27; if eof else &#x27;&#x27;}context at {index}:\n{ctx_txt}&quot;
+                )
+            self.fuzz += fuzz
+            for ch in chunks:
+                ch.orig_index += new_index
+                action.chunks.append(ch)
+            index = new_index + len(next_ctx)
+            self.index = end_idx
+        return action
+
+    def _parse_add_file(self) -&gt; PatchAction:
+        lines: List[str] = []
+        while not self.is_done(
+            (&quot;*** End Patch&quot;, &quot;*** Update File:&quot;, &quot;*** Delete File:&quot;, &quot;*** Add File:&quot;)
+        ):
+            s = self.read_line()
+            if not s.startswith(&quot;+&quot;):
+                raise DiffError(f&quot;Invalid Add File line (missing &#x27;+&#x27;): {s}&quot;)
+            lines.append(s[1:])  # strip leading &#x27;+&#x27;
+        return PatchAction(type=ActionType.ADD, new_file=&quot;\n&quot;.join(lines))
+
+
+# --------------------------------------------------------------------------- #
+#  Helper functions
+# --------------------------------------------------------------------------- #
+def find_context_core(
+    lines: List[str], context: List[str], start: int
+) -&gt; Tuple[int, int]:
+    if not context:
+        return start, 0
+
+    for i in range(start, len(lines)):
+        if lines[i : i + len(context)] == context:
+            return i, 0
+    for i in range(start, len(lines)):
+        if [s.rstrip() for s in lines[i : i + len(context)]] == [
+            s.rstrip() for s in context
+        ]:
+            return i, 1
+    for i in range(start, len(lines)):
+        if [s.strip() for s in lines[i : i + len(context)]] == [
+            s.strip() for s in context
+        ]:
+            return i, 100
+    return -1, 0
+
+
+def find_context(
+    lines: List[str], context: List[str], start: int, eof: bool
+) -&gt; Tuple[int, int]:
+    if eof:
+        new_index, fuzz = find_context_core(lines, context, len(lines) - len(context))
+        if new_index != -1:
+            return new_index, fuzz
+        new_index, fuzz = find_context_core(lines, context, start)
+        return new_index, fuzz + 10_000
+    return find_context_core(lines, context, start)
+
+
+def peek_next_section(
+    lines: List[str], index: int
+) -&gt; Tuple[List[str], List[Chunk], int, bool]:
+    old: List[str] = []
+    del_lines: List[str] = []
+    ins_lines: List[str] = []
+    chunks: List[Chunk] = []
+    mode = &quot;keep&quot;
+    orig_index = index
+
+    while index &lt; len(lines):
+        s = lines[index]
+        if s.startswith(
+            (
+                &quot;@@&quot;,
+                &quot;*** End Patch&quot;,
+                &quot;*** Update File:&quot;,
+                &quot;*** Delete File:&quot;,
+                &quot;*** Add File:&quot;,
+                &quot;*** End of File&quot;,
+            )
+        ):
+            break
+        if s == &quot;***&quot;:
+            break
+        if s.startswith(&quot;***&quot;):
+            raise DiffError(f&quot;Invalid Line: {s}&quot;)
+        index += 1
+
+        last_mode = mode
+        if s == &quot;&quot;:
+            s = &quot; &quot;
+        if s[0] == &quot;+&quot;:
+            mode = &quot;add&quot;
+        elif s[0] == &quot;-&quot;:
+            mode = &quot;delete&quot;
+        elif s[0] == &quot; &quot;:
+            mode = &quot;keep&quot;
+        else:
+            raise DiffError(f&quot;Invalid Line: {s}&quot;)
+        s = s[1:]
+
+        if mode == &quot;keep&quot; and last_mode != mode:
+            if ins_lines or del_lines:
+                chunks.append(
+                    Chunk(
+                        orig_index=len(old) - len(del_lines),
+                        del_lines=del_lines,
+                        ins_lines=ins_lines,
+                    )
+                )
+            del_lines, ins_lines = [], []
+
+        if mode == &quot;delete&quot;:
+            del_lines.append(s)
+            old.append(s)
+        elif mode == &quot;add&quot;:
+            ins_lines.append(s)
+        elif mode == &quot;keep&quot;:
+            old.append(s)
+
+    if ins_lines or del_lines:
+        chunks.append(
+            Chunk(
+                orig_index=len(old) - len(del_lines),
+                del_lines=del_lines,
+                ins_lines=ins_lines,
+            )
+        )
+
+    if index &lt; len(lines) and lines[index] == &quot;*** End of File&quot;:
+        index += 1
+        return old, chunks, index, True
+
+    if index == orig_index:
+        raise DiffError(&quot;Nothing in this section&quot;)
+    return old, chunks, index, False
+
+
+# --------------------------------------------------------------------------- #
+#  Patch → Commit and Commit application
+# --------------------------------------------------------------------------- #
+def _get_updated_file(text: str, action: PatchAction, path: str) -&gt; str:
+    if action.type is not ActionType.UPDATE:
+        raise DiffError(&quot;_get_updated_file called with non-update action&quot;)
+    orig_lines = text.split(&quot;\n&quot;)
+    dest_lines: List[str] = []
+    orig_index = 0
+
+    for chunk in action.chunks:
+        if chunk.orig_index &gt; len(orig_lines):
+            raise DiffError(
+                f&quot;{path}: chunk.orig_index {chunk.orig_index} exceeds file length&quot;
+            )
+        if orig_index &gt; chunk.orig_index:
+            raise DiffError(
+                f&quot;{path}: overlapping chunks at {orig_index} &gt; {chunk.orig_index}&quot;
+            )
+
+        dest_lines.extend(orig_lines[orig_index : chunk.orig_index])
+        orig_index = chunk.orig_index
+
+        dest_lines.extend(chunk.ins_lines)
+        orig_index += len(chunk.del_lines)
+
+    dest_lines.extend(orig_lines[orig_index:])
+    return &quot;\n&quot;.join(dest_lines)
+
+
+def patch_to_commit(patch: Patch, orig: Dict[str, str]) -&gt; Commit:
+    commit = Commit()
+    for path, action in patch.actions.items():
+        if action.type is ActionType.DELETE:
+            commit.changes[path] = FileChange(
+                type=ActionType.DELETE, old_content=orig[path]
+            )
+        elif action.type is ActionType.ADD:
+            if action.new_file is None:
+                raise DiffError(&quot;ADD action without file content&quot;)
+            commit.changes[path] = FileChange(
+                type=ActionType.ADD, new_content=action.new_file
+            )
+        elif action.type is ActionType.UPDATE:
+            new_content = _get_updated_file(orig[path], action, path)
+            commit.changes[path] = FileChange(
+                type=ActionType.UPDATE,
+                old_content=orig[path],
+                new_content=new_content,
+                move_path=action.move_path,
+            )
+    return commit
+
+
+# --------------------------------------------------------------------------- #
+#  User-facing helpers
+# --------------------------------------------------------------------------- #
+def text_to_patch(text: str, orig: Dict[str, str]) -&gt; Tuple[Patch, int]:
+    lines = text.splitlines()  # preserves blank lines, no strip()
+    if (
+        len(lines) &lt; 2
+        or not Parser._norm(lines[0]).startswith(&quot;*** Begin Patch&quot;)
+        or Parser._norm(lines[-1]) != &quot;*** End Patch&quot;
+    ):
+        raise DiffError(&quot;Invalid patch text - missing sentinels&quot;)
+
+    parser = Parser(current_files=orig, lines=lines, index=1)
+    parser.parse()
+    return parser.patch, parser.fuzz
+
+
+def identify_files_needed(text: str) -&gt; List[str]:
+    lines = text.splitlines()
+    return [
+        line[len(&quot;*** Update File: &quot;) :]
+        for line in lines
+        if line.startswith(&quot;*** Update File: &quot;)
+    ] + [
+        line[len(&quot;*** Delete File: &quot;) :]
+        for line in lines
+        if line.startswith(&quot;*** Delete File: &quot;)
+    ]
+
+
+def identify_files_added(text: str) -&gt; List[str]:
+    lines = text.splitlines()
+    return [
+        line[len(&quot;*** Add File: &quot;) :]
+        for line in lines
+        if line.startswith(&quot;*** Add File: &quot;)
+    ]
+
+
+# --------------------------------------------------------------------------- #
+#  File-system helpers
+# --------------------------------------------------------------------------- #
+def load_files(paths: List[str], open_fn: Callable[[str], str]) -&gt; Dict[str, str]:
+    return {path: open_fn(path) for path in paths}
+
+
+def apply_commit(
+    commit: Commit,
+    write_fn: Callable[[str, str], None],
+    remove_fn: Callable[[str], None],
+) -&gt; None:
+    for path, change in commit.changes.items():
+        if change.type is ActionType.DELETE:
+            remove_fn(path)
+        elif change.type is ActionType.ADD:
+            if change.new_content is None:
+                raise DiffError(f&quot;ADD change for {path} has no content&quot;)
+            write_fn(path, change.new_content)
+        elif change.type is ActionType.UPDATE:
+            if change.new_content is None:
+                raise DiffError(f&quot;UPDATE change for {path} has no new content&quot;)
+            target = change.move_path or path
+            write_fn(target, change.new_content)
+            if change.move_path:
+                remove_fn(path)
+
+
+def process_patch(
+    text: str,
+    open_fn: Callable[[str], str],
+    write_fn: Callable[[str, str], None],
+    remove_fn: Callable[[str], None],
+) -&gt; str:
+    if not text.startswith(&quot;*** Begin Patch&quot;):
+        raise DiffError(&quot;Patch text must start with *** Begin Patch&quot;)
+    paths = identify_files_needed(text)
+    orig = load_files(paths, open_fn)
+    patch, _fuzz = text_to_patch(text, orig)
+    commit = patch_to_commit(patch, orig)
+    apply_commit(commit, write_fn, remove_fn)
+    return &quot;Done!&quot;
+
+
+# --------------------------------------------------------------------------- #
+#  Default FS helpers
+# --------------------------------------------------------------------------- #
+def open_file(path: str) -&gt; str:
+    with open(path, &quot;rt&quot;, encoding=&quot;utf-8&quot;) as fh:
+        return fh.read()
+
+
+def write_file(path: str, content: str) -&gt; None:
+    target = pathlib.Path(path)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    with target.open(&quot;wt&quot;, encoding=&quot;utf-8&quot;) as fh:
+        fh.write(content)
+
+
+def remove_file(path: str) -&gt; None:
+    pathlib.Path(path).unlink(missing_ok=True)
+
+
+# --------------------------------------------------------------------------- #
+#  CLI entry-point
+# --------------------------------------------------------------------------- #
+def main() -&gt; None:
+    import sys
+
+    patch_text = sys.stdin.read()
+    if not patch_text:
+        print(&quot;Please pass patch text through stdin&quot;, file=sys.stderr)
+        return
+    try:
+        result = process_patch(patch_text, open_file, write_file, remove_file)
+    except DiffError as exc:
+        print(exc, file=sys.stderr)
+        return
+    print(result)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre><h2>Other Effective Diff Formats</h2>
+<p>If you want to try using a different diff format, we found in testing that the SEARCH/REPLACE diff format used in Aider’s polyglot benchmark, as well as a pseudo-XML format with no internal escaping, both had high success rates.</p>
+<p>These diff formats share two key aspects: (1) they do not use line numbers, and (2) they provide both the exact code to be replaced, and the exact code with which to replace it, with clear delimiters between the two.</p>
+<pre><code class="language-python">SEARCH_REPLACE_DIFF_EXAMPLE = &quot;&quot;&quot;
+path/to/file.py
+```
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; SEARCH
+def search():
+    pass
+=======
+def search():
+   raise NotImplementedError()
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; REPLACE
+&quot;&quot;&quot;
+
+PSEUDO_XML_DIFF_EXAMPLE = &quot;&quot;&quot;
+&lt;edit&gt;
+&lt;file&gt;
+path/to/file.py
+&lt;/file&gt;
+&lt;old_code&gt;
+def search():
+    pass
+&lt;/old_code&gt;
+&lt;new_code&gt;
+def search():
+   raise NotImplementedError()
+&lt;/new_code&gt;
+&lt;/edit&gt;
+&quot;&quot;&quot;</code></pre>
+</div>
+
+             </div>
+        </section>
+
+        <section id="summary" class="tab-content">
+             <ul>
+<li>GPT-4.1 來了！但你知道怎麼跟它「好好說話」嗎？</li>
+<li>讓 GPT-4.1 變身超級助理：Agentic Workflows 指南</li>
+<li>處理海量資訊？GPT-4.1 的長文本超能力</li>
+<li>引導 GPT-4.1「想清楚再說」：思維鏈 (Chain of Thought) 的妙用</li>
+<li>指哪打哪！GPT-4.1 的超強指令遵循能力</li>
+<li>終極提示詞結構與分隔符建議</li>
+<li>結語：釋放 GPT-4.1 的全部力量</li>
+</ul>
+<h1>精通 GPT-4.1 提示詞：釋放下一代 AI 潛能的實戰指南</h1>
+<blockquote>
+<p>探索 OpenAI 最新的 GPT-4.1 模型，學習如何透過優化提示詞 (Prompt) 來駕馭其強大的程式編寫、指令遵循和長文本處理能力。本指南將分享實用的技巧和範例，助您充分發揮 GPT-4.1 的潛力。</p>
+</blockquote>
+<p>此文章為官方釋出 GPT-4.1 Prompting Guide 簡化版，若需要完整文章請閱讀此。</p>
+<h2>GPT-4.1 來了！但你知道怎麼跟它「好好說話」嗎？</h2>
+<p>嘿，各位 AI 玩家和開發者們！OpenAI 又放大招了，推出了 GPT-4.1 系列模型。跟之前的 GPT-4o 相比，它在寫程式碼、理解指令，還有處理超長文件方面，簡直是跳了一大級。是不是很興奮？</p>
+<p>不過，俗話說得好，「工欲善其事，必先利其器」。要讓這位新來的「高手」發揮十成功力，得學會怎麼跟它溝通，也就是所謂的「提示詞工程」(Prompt Engineering)。</p>
+<p>這篇文章就是你的武功秘笈！整理了大量內部測試的心得，就是要幫你掌握駕馭 GPT-4.1 的訣竅。</p>
+<p>等等，舊的提示詞技巧還管用嗎？</p>
+<p>很多老方法依然有效，像是給它一些範例參考（Context Examples）、指令越清楚具體越好、引導它先「思考規劃」再行動等等。這些都能讓模型變得更聰明。</p>
+<p>但！請注意，GPT-4.1 有個重要的轉變：它比前輩們 更「聽話」 ，會更嚴格、更照字面意思來遵循你的指令。以前的模型可能比較會「猜」你想幹嘛，但 GPT-4.1 就比較一板一眼。</p>
+<p>這有好有壞。好處是，只要你的指令夠明確，它就能被精準地引導；壞處是，如果你期望它像以前一樣「心領神會」，那結果可能會出乎意料。不過別擔心，通常只要補上一句堅定且毫不含糊的指令，就能把它導回正軌。</p>
+<p>接下來，會分享一些實用的提示詞範例，但請記得，AI 工程是門實驗科學，沒有萬能丹。最重要的還是要多方嘗試、建立有效的評估機制，並持續迭代，才能找到最適合你應用場景的方法。</p>
+<p>準備好了嗎？讓開始探索 GPT-4.1 的提示詞魔法吧！</p>
+<h2>讓 GPT-4.1 變身超級助理：Agentic Workflows 指南</h2>
+<p>你知道嗎？GPT-4.1 非常適合用來打造所謂的「代理式工作流程」(Agentic Workflows)。簡單來說，就是讓 AI 不只回答單一問題，而是能自主執行一系列步驟來完成更複雜的任務，就像一個小助理一樣。</p>
+<p>在訓練 GPT-4.1 時，特別強化了它解決問題的「代理」能力。事實上，在針對軟體工程任務的 SWE-bench 測試中，的代理式設定解決了高達 55% 的問題，這在非推理模型中可是頂尖水準！</p>
+<p>打造得力助手的三個「咒語」</p>
+<p>為了讓 GPT-4.1 的代理能力全開，強烈建議在所有「代理提示詞」中加入以下三種關鍵提醒。雖然下面的範例是針對寫程式碼的場景優化，但稍作修改就能應用於其他代理任務：</p>
+<ol>
+<li>堅持到底 (Persistence)： 告訴模型這是一個需要多輪對話的任務，別中途「放棄治療」把控制權交還給你。 範例：「你是一位代理程式 - 請持續執行，直到使用者的請求完全解決為止，才能結束你的回合並將控制權交還。只有當你確定問題已解決時，才能終止你的回合。」 白話說：就是讓它知道「這事兒沒完，繼續做！」</li>
+<li>善用工具 (Tool-calling)： 鼓勵模型充分利用你提供給它的工具（例如讀取檔案、執行程式碼等），而不是自己瞎猜或幻想答案。 範例：「如果你不確定與使用者請求相關的檔案內容或程式碼結構，請使用你的工具讀取檔案並收集相關資訊：不要猜測或編造答案。」 白話說：「不懂就查，別自己亂掰！」</li>
+<li>先想後做 (Planning) [可選]： 如果你希望模型在每次使用工具前都先思考並說明計劃，而不是默默地連續呼叫工具，可以加上這個。 範例：「你必須在每次呼叫函式前進行詳盡的規劃，並在每次函式呼叫後深入反思其結果。不要僅僅透過呼叫函式來完成整個過程，這可能會影響你解決問題和深入思考的能力。」 白話說：「動手前先想想，告訴我你要幹嘛，做完後再想想結果。」</li>
+</ol>
+<p>效果驚人！</p>
+<p>說出來你可能不信，單單加上這三條簡單的指令，內部在 SWE-bench 測試上的分數就提高了將近 20%！這讓模型從一個比較被動的聊天機器人，轉變成一個更「積極」、能自主推動任務的代理。所以，強烈建議大家從這三點開始打造你的代理提示詞。</p>
+<p>關於「工具呼叫」的小提醒</p>
+<p>跟以前的模型比，GPT-4.1 在使用 API 中 tools 欄位傳遞的工具方面，受過更多訓練。鼓勵開發者 只用 這個 tools 欄位來提供工具，而不是像以前有些人會把工具描述手動塞進提示詞裡，然後再自己寫解析器。</p>
+<p>為什麼？因為使用標準的 tools 欄位是減少錯誤、確保模型在執行工具呼叫時表現穩定的最佳方式。的實驗也證明，使用 API 解析的工具描述，比起手動注入到系統提示詞中，SWE-bench 的通過率提高了 2%。</p>
+<p>給工具取個好名字，並在 description 欄位提供清晰、詳細的描述。同樣地，工具的每個參數也要有好名字和好描述。如果你的工具特別複雜，想提供使用範例，建議在系統提示詞裡開一個 # Examples 區塊放範例，而不是塞在 description 裡。範例可以幫助模型了解何時該用工具、是否要連同使用者文字一起呼叫、以及針對不同輸入該用哪些參數。</p>
+<p>讓模型「大聲思考」：誘導式規劃與思維鏈</p>
+<p>前面提到，你可以選擇性地讓 GPT-4.1 代理在工具呼叫之間進行規劃和反思。雖然 GPT-4.1 本身不是「推理模型」（它不會在回答前產生內部的思考鏈），但你可以透過類似上面「Planning」的提示詞，誘導它在輸出中明確地一步步展示其思考過程，就像「大聲思考」一樣。</p>
+<p>在的 SWE-bench 代理任務實驗中，誘導明確的規劃讓通過率提升了 4%。這在處理複雜問題時特別有用，能讓你更清楚模型是怎麼「想」的。</p>
+<h2>處理海量資訊？GPT-4.1 的長文本超能力</h2>
+<p>GPT-4.1 的另一個亮點是它強大的長文本處理能力，輸入窗口高達 100 萬個 token！這代表什麼？你可以把超長的文件、大量的程式碼、或者一整本書的內容丟給它，讓它幫你：</p>
+<ul>
+<li>解析結構化文件</li>
+<li>重新排序資訊</li>
+<li>從大量內容中挑選相關資訊（並忽略不相關的）</li>
+<li>進行需要跨多個段落或文件的多步推理</li>
+</ul>
+<p>長文本雖好，但也要注意</p>
+<p>雖然 GPT-4.1 在「大海撈針」的測試中表現優異（即使在 100 萬 token 的極限下），處理混合了相關和不相關資訊的複雜任務也很在行，但有幾點要注意：</p>
+<ul>
+<li>資訊越多越難找： 當需要模型從極長文本中檢索的項目越多時，效能可能會下降。</li>
+<li>全局推理的挑戰： 對於需要理解整個文本狀態才能完成的複雜推理（例如圖搜索），長文本的挑戰更大。</li>
+</ul>
+<p>調整模型對「外部知識」的依賴</p>
+<p>有時候，你希望模型嚴格只根據你提供的文本來回答，避免它「自由發揮」；有時候，你又希望它能結合自身的知識來補充或連結資訊。你可以透過指令來調整：</p>
+<ul>
+<li>嚴格模式（只用提供內容）：</li>
+</ul>
+<pre><code class="language-plaintext">    # Instructions
+    // for internal knowledge
+    - 只能使用提供的外部內容 (External Context) 來回答使用者查詢。如果你根據此內容不知道答案，即使使用者堅持要你回答，你也必須回應「我沒有回答所需的資訊」。
+</code></pre>
+<ul>
+<li>彈性模式（結合自身知識）：</li>
+</ul>
+<pre><code class="language-plaintext">    # Instructions
+    // For internal and external knowledge
+    - 預設使用提供的外部內容來回答使用者查詢，但如果回答需要其他基本知識，且你對答案有信心，你可以使用一些自己的知識來協助回答。
+</code></pre>
+<p>提示詞的「擺放藝術」</p>
+<p>尤其在處理長文本時，指令和內容的擺放位置會影響效果。的經驗是：</p>
+<ul>
+<li>最佳策略（三明治法）： 把你的主要指令放在 提供的長文本內容之前和之後各放一次 。</li>
+<li>次佳策略（指令優先）： 如果你只想放一次指令，放在 內容之前 比放在之後效果更好。</li>
+</ul>
+<p>記住這個小技巧，能幫助模型更好地抓住重點！</p>
+<h2>引導 GPT-4.1「想清楚再說」：思維鏈 (Chain of Thought) 的妙用</h2>
+<p>前面提過，GPT-4.1 不是天生的「推理模型」，但可以透過提示詞引導它進行「思維鏈」(Chain of Thought, CoT)，也就是讓它在回答前先一步步把問題拆解、思考、分析。</p>
+<p>這有什麼好處？能顯著提升輸出的品質和準確性，尤其對複雜問題。代價是會消耗更多輸出 token，成本和延遲會高一些。好消息是，GPT-4.1 本身在代理推理和解決實際問題方面訓練得不錯，通常不需要太費力的提示就能做得很好。</p>
+<p>基礎 CoT 指令：</p>
+<p>可以在提示詞的末尾加上這句簡單的指令作為起點：</p>
+<pre><code class="language-plaintext">...
+首先，仔細逐步思考需要哪些文件來回答查詢。然後，打印出每個文件的標題 (TITLE) 和 ID。接著，將這些 ID 格式化成一個列表。
+</code></pre>
+<p>進階 CoT 策略：</p>
+<p>如果基礎版效果不彰，你可以觀察模型在你的特定範例或評估中是怎麼「想錯」的，然後用更明確的指令來修正它的規劃或推理錯誤。例如，如果發現模型容易誤解使用者意圖，或沒有充分分析上下文，可以加入更詳細的推理策略：</p>
+<pre><code class="language-plaintext"># Reasoning Strategy
+1. 查詢分析 (Query Analysis): 分解並分析查詢，直到你確信理解其意圖。利用提供的上下文來釐清任何模糊或令人困惑的資訊。
+2. 上下文分析 (Context Analysis): 仔細選擇並分析一大組可能相關的文件。優先考慮召回率 (recall) - 有些不相關也沒關係，但正確的文件必須在這個清單中，否則最終答案會是錯的。每個文件的分析步驟：
+    a. 分析 (Analysis): 分析該文件與回答查詢的相關性（或不相關性）。
+    b. 相關性評分 (Relevance rating): [高, 中, 低, 無]
+3. 綜合 (Synthesis): 總結哪些文件最相關及其原因，包含所有相關性評分為中或更高的文件。
+
+# User Question
+{user_question}
+
+# External Context
+{external_context}
+
+首先，仔細逐步思考需要哪些文件來回答查詢，嚴格遵守提供的推理策略 (Reasoning Strategy)。然後，打印出每個文件的標題 (TITLE) 和 ID。接著，將這些 ID 格式化成一個列表。
+</code></pre>
+<p>關鍵在於觀察、迭代，找出最適合你需求的 CoT 提示方式。</p>
+<h2>指哪打哪！GPT-4.1 的超強指令遵循能力</h2>
+<p>GPT-4.1 最令人印象深刻的特點之一，就是它出色的「指令遵循」能力。這意味著開發者可以非常精確地塑造和控制模型的輸出，滿足各種特定需求，像是：</p>
+<ul>
+<li>代理推理步驟</li>
+<li>回應的語氣和風格</li>
+<li>工具呼叫的時機和資訊</li>
+<li>輸出的格式</li>
+<li>需要避開的話題等等</li>
+</ul>
+<p>但正如前面提到的，它的「字面化」意味著你需要更明確地指示它「該做什麼」和「不該做什麼」。如果你把之前為其他模型優化的提示詞直接搬過來，可能會發現效果不如預期，因為 GPT-4.1 會更嚴格地遵循現有指令，而不太會去推斷那些「潛規則」。</p>
+<p>指令開發與除錯流程建議：</p>
+<ol>
+<li>從大方向開始： 建立一個整體的「回應規則」(Response Rules) 或「指令」(Instructions) 區塊，用條列式說明高層次的指導原則。</li>
+<li>針對性調整： 如果想改變某個特定行為，可以增加更詳細的分類區塊，例如 # Sample Phrases （範例語句）。</li>
+<li>明確步驟： 如果希望模型遵循特定的工作流程，使用有序列表（1, 2, 3…）並指示模型遵循這些步驟。</li>
+<li>疑難排解： 如果行為仍然不符合預期： 檢查衝突或模糊指令： 確保沒有互相矛盾、不夠具體或錯誤的指令/範例。如果指令衝突，GPT-4.1 傾向於遵循 靠近提示詞末尾 的那個。 加入範例： 提供清晰展示期望行為的範例。確保範例中體現的重要行為也在規則中有文字說明。 少用「激勵」手段： 通常不需要使用全大寫、給小費或威脅利誘等方式。先試試不用這些，如果真的對你的特定場景有幫助再考慮。注意：如果你現有的提示詞用了這些技巧，可能會讓 GPT-4.1 過度關注它們。</li>
+</ol>
+<p>常見的「翻車」場景（不只 GPT-4.1 有）：</p>
+<ul>
+<li>過於僵化的規則： 指示模型「必須」做某事有時會有反效果。例如，你說「回應使用者前必須呼叫工具」，模型在資訊不足時可能會幻想出工具輸入或用空值呼叫。可以加上「如果你沒有足夠的資訊來呼叫工具，請向使用者詢問所需資訊」來緩解。</li>
+<li>變成複讀機： 提供範例語句時，模型可能會一字不漏地照搬，聽起來很重複。記得指示模型「根據情況適當變化」。</li>
+<li>話癆或格式控： 如果沒有特別指示，模型可能過於熱衷解釋自己的決策，或輸出過多不必要的格式。透過指令和範例來約束。</li>
+</ul>
+<h2>終極提示詞結構與分隔符建議</h2>
+<p>一路看下來，你可能想問，到底一個「好」的提示詞長什麼樣？這裡提供一個不錯的起始結構，你可以根據需求增刪調整：</p>
+<pre><code class="language-plaintext"># 角色與目標 (Role and Objective)
+# 指令 (Instructions)
+## 更詳細指令的子分類 (Sub-categories for more detailed instructions)
+# 推理步驟 (Reasoning Steps)
+# 輸出格式 (Output Format)
+# 範例 (Examples)
+## 範例 1 (Example 1)
+# 上下文 (Context)
+# 最終指令與逐步思考提示 (Final instructions and prompt to think step by step)
+</code></pre>
+<p>選對「分隔符」，事半功倍</p>
+<p>用什麼符號來區分提示詞的不同部分也很重要。</p>
+<ul>
+<li>Markdown： 推薦首選！用 # 做標題（支援多層級），用 <code> </code> 或 包裹程式碼，用標準的數字或項目符號列表。簡單直觀。</li>
+<li>XML 標籤： 效果也不錯，GPT-4.1 對 XML 結構的理解有提升。方便精確包裹區塊、添加元數據、實現嵌套。例如： <examples> <example type= "Abbreviate" > <input> San Francisco </input> <output> - SF </output> </example> </examples></li>
+<li>JSON： 結構化程度高，模型尤其在程式碼相關場景下理解很好。但可能比較冗長，需要處理字符轉義。</li>
+</ul>
+<p>針對大量文件/長文本的特別建議：</p>
+<ul>
+<li>XML 在長文本測試中表現良好。 例：<doc id=1 title=”狐狸”>敏捷的棕色狐狸跳過懶狗</doc></li>
+<li>Lee et al. 提出的格式 也表現不錯。 例：ID: 1 | TITLE: 狐狸 | CONTENT: 敏捷的棕色狐狸跳過懶狗</li>
+<li>JSON 表現相對較差。</li>
+</ul>
+<p>總之，選擇分隔符的原則是：清晰、能讓模型「一眼看到」重點。例如，如果你提供的上下文裡本身就有很多 XML，那再用 XML 做分隔符效果可能就打折扣了。</p>
+<p>一些小提醒 (Caveats)：</p>
+<ul>
+<li>在極少數情況下，模型可能不太願意產生非常長、重複性的輸出（例如逐一分析數百個項目）。如果你的應用需要這樣，請強力指示模型完整輸出，或者考慮拆分問題、使用更簡潔的方法。</li>
+<li>觀察到極少數並行工具呼叫 (parallel tool calls) 出錯的情況。建議測試一下，如果遇到問題，可以考慮將 parallel_tool_calls 參數設為 false 。</li>
+</ul>
+<h2>結語：釋放 GPT-4.1 的全部力量</h2>
+<p>GPT-4.1 無疑是個強大的工具，但要真正發揮它的潛力，關鍵在於「提示詞」。記住，它更像一個嚴格遵循食譜的廚師，而不是一個會讀心術的大師。</p>
+<ul>
+<li>指令要清晰、具體、無歧義。</li>
+<li>善用 Agentic Workflows 的三大提醒：Persistence, Tool-calling, Planning。</li>
+<li>處理長文本時，注意指令擺放和上下文依賴的調整。</li>
+<li>透過 Chain of Thought 引導模型「大聲思考」。</li>
+<li>利用範例和結構化的提示詞來精確控制輸出。</li>
+<li>最重要的是：不斷實驗、評估、迭代！</li>
+</ul>
+<p>希望這份指南能幫助你更好地駕馭 GPT-4.1，創造出更驚豔的應用！</p>
+
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-buttons">
+            <a href="resume.pdf" download class="download-button">下載中文履歷</a>
+            <a href="English_resume.pdf" download class="download-button">下載英文履歷</a>
+            <a href="#" target="_blank" rel="noopener noreferrer" class="external-link-button github-button">前往 GitHub</a>
+        </div>
+        <p>Generated by Python Script</p>
+    </footer>
+
+    <script>
+        // Main tab switching function
+        function showTab(tabId) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(button => button.classList.remove('active'));
+
+            const selectedContent = document.getElementById(tabId);
+            if (selectedContent) selectedContent.classList.add('active');
+            const selectedButton = document.querySelector(`.tab-button[onclick="showTab('${tabId}')"]`);
+            if (selectedButton) selectedButton.classList.add('active');
+
+            // If the main guide tab is shown, activate its first sub-tab
+            if (tabId === 'guide') {
+                // Find the first sub-tab button and click it programmatically or call showSubTab
+                const firstSubButton = document.querySelector('#guide .sub-nav button');
+                if (firstSubButton) {
+                    const firstSubTabId = firstSubButton.getAttribute('onclick').match(/'([^']+)'/)[1];
+                    showSubTab(firstSubTabId); // Show the first sub-tab
+                }
+            }
+        }
+
+        // Sub-tab switching function (within the 'guide' section)
+        function showSubTab(subTabId) {
+            const subContents = document.querySelectorAll('#guide .sub-tab-content');
+            subContents.forEach(content => content.classList.remove('active'));
+            const subButtons = document.querySelectorAll('#guide .sub-tab-button');
+            subButtons.forEach(button => button.classList.remove('active'));
+
+            const selectedSubContent = document.getElementById(subTabId);
+            if (selectedSubContent) selectedSubContent.classList.add('active');
+            const selectedSubButton = document.querySelector(`#guide .sub-tab-button[onclick="showSubTab('${subTabId}')"]`);
+            if (selectedSubButton) selectedSubButton.classList.add('active');
+        }
+
+
+        // Initialize the first main tab on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            showTab('intro');
+        });
+    </script>
+</body>
+</html>
